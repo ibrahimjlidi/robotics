@@ -1,12 +1,12 @@
 # Four-Week Full-Stack Web Development Formation
 
-An instructor guide for a practical, 20-session programme based on the four focus areas supplied for this formation. The intended cohort has a bachelor's-level background in Computer Science, Computer Engineering, or Software Development and entry-level knowledge of HTML/HTML5, programming fundamentals, full-stack development, and software frameworks. The app also includes a short bilingual presentation for each session, written for children and suitable for projecting and discussing together.
+An instructor guide for a practical, 20-session programme based on the four focus areas supplied for this formation. The intended programme requirements are a bachelor's-level background in Computer Science, Computer Engineering, or Software Development, plus entry-level knowledge of HTML/HTML5, programming fundamentals, full-stack development, and software frameworks. Course content is written so a teacher can explain and demonstrate it to children as a shared, project-based class.
 
 **Schedule:** four weeks, Monday to Friday, three hours per session (60 contact hours total). Each session follows the same 180-minute rhythm; the remaining course time is for optional preparation, mentoring, and independent work.
 
 **Teaching approach:** diagnose before teaching, demonstrate a small idea, let learners build it, review evidence together, and give one specific next step. Keep the baseline diagnostic supportive rather than pass/fail. Adapt the pace from daily exit tickets.
 
-To present a session to children, open **Full-Stack Formation**, expand the session, and select **Present these slides to the kids** (English) or **اعرض هذه الشرائح للأطفال** (Arabic). Use the on-screen controls or arrow keys to move between slides; **Home** and **End** jump to the first and last slide. Choose **Full screen** for a projector, then press **Escape** to return.
+To teach a session, open **Full-Stack Formation**, expand it, and select **Teach this lesson** or **🎤 اشرح الدرس وطبّق**. Each projected lesson has five parts: a warm-up question; a child-friendly explanation; a live code demonstration with its expected result; three guided build steps; and a challenge with a revealable sample answer. Navigate with the on-screen controls or arrow keys; **Home** and **End** jump to the first and last part. Choose **Full screen** to present. The 20 lessons build one practical classroom club website, moving from HTML and CSS through JavaScript, testing, React components, APIs, and the final demo.
 
 ## Learning outcomes
 

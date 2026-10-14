@@ -11,7 +11,7 @@ The Real-World Project page is available in English and simple Arabic, including
 The simulator arena uses a local Three.js module for its 3D floor, robot, obstacles, and gift. Drag the scene to orbit the camera and scroll to zoom; the existing obstacle sensing, collision behavior, and movement controls are retained. A 2D canvas remains available as a fallback when WebGL is unavailable.
 
 ## Four-week full-stack formation
-The Full-Stack Formation section provides a bilingual 20-session course for four weeks of three-hour sessions. It covers entry assessment and digital foundations, HTML/CSS/JavaScript, React and Node.js/Express, Git and code review, responsible AI-assisted development, a team capstone, mentoring, presentations, and career next steps. Every session includes a child-friendly, bilingual, click-through presentation with discussion questions and optional full-screen display. Learners can track completed sessions in their browser. The instructor's session plans, preparation checklist, project brief, and assessment rubric are in [FORMATION-GUIDE.md](./FORMATION-GUIDE.md).
+The Full-Stack Formation section provides a bilingual, child-facing, hands-on web-development course with 20 practical sessions. Each lesson builds the same classroom club website and includes a concept explanation, a concrete HTML/CSS/JavaScript/React/Git/API demonstration, guided build steps, a challenge with a sample answer, and a full-screen presentation view. Learners can track completed sessions in their browser. The instructor's session plans, preparation checklist, project brief, and assessment rubric are in [FORMATION-GUIDE.md](./FORMATION-GUIDE.md).
 
 ## Run locally
     npx serve .        # then open http://localhost:3000

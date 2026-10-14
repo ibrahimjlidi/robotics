@@ -85,6 +85,14 @@ h2,h3{font-size:14px;margin:0 0 6px}
 .presentation-icon{font-size:clamp(48px,10vw,94px);line-height:1;margin-bottom:18px}
 .presentation-content h2{font-size:clamp(26px,5vw,48px);line-height:1.16;margin:0 0 16px}
 .presentation-content p{font-size:clamp(18px,2.4vw,25px);line-height:1.65;color:var(--mut);margin:0}
+.presentation-stage{display:inline-flex;align-self:flex-start;margin-bottom:12px;padding:6px 11px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:14px;font-weight:750}
+.presentation-content pre{width:100%;max-height:32vh;overflow:auto;margin:18px 0;padding:18px;border-radius:14px;background:#101827;color:#e2e8f0;text-align:left;direction:ltr;white-space:pre-wrap;overflow-wrap:anywhere;font:clamp(14px,1.8vw,19px)/1.55 ui-monospace,Menlo,Consolas,monospace}
+.presentation-output{margin-top:12px;padding:13px 16px;border-radius:12px;background:#ecfdf3;color:#166534;font-size:16px}
+.presentation-steps{margin:16px 0;padding-inline-start:28px;color:var(--fg);font-size:clamp(16px,2vw,21px);line-height:1.75}
+.presentation-answer{margin-top:18px;border:1px solid #a5b4fc;border-radius:12px;background:#eef2ff;padding:12px 16px}
+.presentation-answer summary{color:#3730a3;font-weight:750;cursor:pointer}
+.presentation-answer p{margin-top:10px;color:#312e81}
+.presentation-finish{margin-top:14px;padding:12px 16px;border-radius:12px;background:#ecfdf3;color:#166534;font-weight:750}
 .presentation-question{margin-top:22px;padding:16px 18px;border-inline-start:5px solid #4f46e5;border-radius:12px;background:#eef2ff;color:#312e81;font-size:clamp(16px,2vw,21px);font-weight:700}
 .presentation-progress{width:100%;height:10px;margin:12px 0;accent-color:#4f46e5}
 .presentation-controls{justify-content:center}
@@ -986,6 +994,7 @@ void loop() {
 <script type="module" src="/robot-scene.js"></script>
 <script src="/formation-course.js"></script>
 <script src="/formation-presentations.js"></script>
+<script src="/formation-lessons.js"></script>
 <script>
 const W=640,H=420,cv=document.getElementById('c'),ctx=cv.getContext('2d');
 const track=document.createElement('canvas');track.width=W;track.height=H;const tx=track.getContext('2d',{willReadFrequently:true});
@@ -1842,33 +1851,59 @@ function renderPresentation(){
   const text=course.labels[language],sessions=course.weeks.flatMap(week=>week.sessions);
   const session=sessions[activePresentation.session];
   const deck=window.FORMATION_PRESENTATIONS[activePresentation.session];
-  if(!session||!deck?.length)throw new Error(`Presentation content is missing for session ${activePresentation.session+1}`);
-  const slide=deck[activePresentation.slide];
-  const content=slide[language],rtl=language==='ar';
+  const lesson=window.FORMATION_LESSONS[activePresentation.session],rtl=language==='ar';
+  if(!session||!deck?.length||!lesson)throw new Error(`Presentation content is missing for session ${activePresentation.session+1}`);
+  const stage=activePresentation.slide;
+  const slide=deck[0];
+  const content=slide[language];
+  const stageTitle=[text.warmUp,text.concept,text.liveDemo,text.guidedBuild,text.tryIt][stage];
+  const stageIcon=[slide.icon,'💡','💻','🛠️','🎯'][stage];
   const sessionNumber=rtl?['١','٢','٣','٤','٥','٦','٧','٨','٩','١٠','١١','١٢','١٣','١٤','١٥','١٦','١٧','١٨','١٩','٢٠'][activePresentation.session]:activePresentation.session+1;
-  const slideNumber=rtl?['١','٢','٣','٤'][activePresentation.slide]:activePresentation.slide+1;
-  const slideTotal=rtl?['١','٢','٣','٤'][deck.length-1]:deck.length;
+  const slideNumber=rtl?['١','٢','٣','٤','٥'][stage]:stage+1;
+  const slideTotal=rtl?'٥':'5';
   const heading=`${text.presentationTitle} · ${text.session} ${sessionNumber}: ${session.title[language]}`;
+  let lessonContent;
+  if(stage===0){
+    lessonContent=`<h2 id="presentation-slide-title" tabindex="-1">${escapeHtml(content.title)}</h2>
+      <p>${escapeHtml(content.body)}</p>
+      <div class="presentation-question">${escapeHtml(text.thinkAbout)}: ${escapeHtml(content.question)}</div>`;
+  }else if(stage===1){
+    lessonContent=`<h2 id="presentation-slide-title" tabindex="-1">${escapeHtml(text.concept)}</h2>
+      <p>${escapeHtml(lesson.teach[language])}</p>`;
+  }else if(stage===2){
+    lessonContent=`<h2 id="presentation-slide-title" tabindex="-1">${escapeHtml(text.liveDemo)}</h2>
+      <p>${escapeHtml(lesson.demo[language])}</p>
+      <pre><code>${escapeHtml(lesson.code)}</code></pre>
+      <div class="presentation-output"><strong>${escapeHtml(text.exampleOutput)}:</strong> ${escapeHtml(lesson.output[language])}</div>`;
+  }else if(stage===3){
+    lessonContent=`<h2 id="presentation-slide-title" tabindex="-1">${escapeHtml(text.guidedBuild)}</h2>
+      <p>${escapeHtml(lesson.demo[language])}</p>
+      <ol class="presentation-steps">${lesson.build[language].map(step=>`<li>${escapeHtml(step)}</li>`).join('')}</ol>`;
+  }else{
+    lessonContent=`<h2 id="presentation-slide-title" tabindex="-1">${escapeHtml(text.challenge)}</h2>
+      <p>${escapeHtml(lesson.challenge[language])}</p>
+      <details class="presentation-answer"><summary>${escapeHtml(text.showAnswer)}</summary><p>${escapeHtml(lesson.answer[language])}</p></details>
+      <div class="presentation-finish">${escapeHtml(text.lessonComplete)}</div>`;
+  }
   dialog.innerHTML=`<div class="presentation-frame" lang="${language}" dir="${rtl?'rtl':'ltr'}">
     <div class="presentation-top"><span>${escapeHtml(heading)}</span><button type="button" id="presentation-close">${escapeHtml(text.closePresentation)}</button></div>
     <article class="presentation-content" aria-live="polite">
-      <div class="presentation-icon" aria-hidden="true">${escapeHtml(slide.icon)}</div>
-      <h2 id="presentation-slide-title" tabindex="-1">${escapeHtml(content.title)}</h2>
-      <p>${escapeHtml(content.body)}</p>
-      <div class="presentation-question">${escapeHtml(text.thinkAbout)}: ${escapeHtml(content.question)}</div>
+      <span class="presentation-stage">${escapeHtml(stageTitle)}</span>
+      <div class="presentation-icon" aria-hidden="true">${escapeHtml(stageIcon)}</div>
+      ${lessonContent}
     </article>
-    <progress class="presentation-progress" max="${deck.length}" value="${activePresentation.slide+1}" aria-label="${escapeHtml(text.slideOf)} ${slideNumber} ${rtl?'من':'of'} ${slideTotal}"></progress>
+    <progress class="presentation-progress" max="5" value="${stage+1}" aria-label="${escapeHtml(text.slideOf)} ${slideNumber} ${rtl?'من':'of'} ${slideTotal}"></progress>
     <div class="presentation-controls">
-      <button type="button" id="presentation-previous"${activePresentation.slide===0?' disabled':''}>${escapeHtml(text.previousSlide)}</button>
+      <button type="button" id="presentation-previous"${stage===0?' disabled':''}>${escapeHtml(text.previousSlide)}</button>
       <span>${escapeHtml(text.slideOf)} ${slideNumber} ${rtl?'من':'of'} ${slideTotal}</span>
-      <button type="button" id="presentation-next" class="p">${escapeHtml(activePresentation.slide===deck.length-1?text.finishPresentation:text.nextSlide)}</button>
+      <button type="button" id="presentation-next" class="p">${escapeHtml(stage===4?text.finishPresentation:text.nextSlide)}</button>
       <button type="button" id="presentation-fullscreen">${escapeHtml(document.fullscreenElement===dialog?text.exitFullScreen:text.fullScreen)}</button>
     </div>
     <p class="presentation-error" id="presentation-error" role="status" aria-live="polite"></p>
   </div>`;
   $('presentation-close').onclick=()=>dialog.close();
   $('presentation-previous').onclick=()=>changePresentationSlide(-1);
-  $('presentation-next').onclick=()=>activePresentation.slide===deck.length-1?dialog.close():changePresentationSlide(1);
+  $('presentation-next').onclick=()=>stage===4?dialog.close():changePresentationSlide(1);
   $('presentation-fullscreen').onclick=async()=>{
     try{
       if(document.fullscreenElement)await document.exitFullscreen();
@@ -1883,8 +1918,7 @@ function renderPresentation(){
   $('presentation-slide-title').focus({preventScroll:true});
 }
 function changePresentationSlide(direction){
-  const deck=window.FORMATION_PRESENTATIONS[activePresentation.session];
-  activePresentation.slide=Math.max(0,Math.min(deck.length-1,activePresentation.slide+direction));
+  activePresentation.slide=Math.max(0,Math.min(4,activePresentation.slide+direction));
   renderPresentation();
 }
 document.addEventListener('keydown',event=>{
@@ -1893,7 +1927,7 @@ document.addEventListener('keydown',event=>{
   if(event.key==='ArrowRight'){event.preventDefault();changePresentationSlide(language==='ar'?-1:1)}
   if(event.key==='ArrowLeft'){event.preventDefault();changePresentationSlide(language==='ar'?1:-1)}
   if(event.key==='Home'){event.preventDefault();activePresentation.slide=0;renderPresentation()}
-  if(event.key==='End'){event.preventDefault();activePresentation.slide=window.FORMATION_PRESENTATIONS[activePresentation.session].length-1;renderPresentation()}
+  if(event.key==='End'){event.preventDefault();activePresentation.slide=4;renderPresentation()}
 });
 function startLesson(index){
   const program=lessonPrograms[index];
