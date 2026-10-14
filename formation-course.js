@@ -55,7 +55,18 @@ window.FORMATION_COURSE = {
       rubric: ['Working features and requirements — 30%', 'Code quality, Git use, and peer review — 20%', 'Testing, accessibility, and reliability — 20%', 'Clear demo and communication — 15%', 'Reflection, teamwork, and next-step plan — 15%'],
       rubricPass: 'Suggested completion threshold: 70% overall, with a working core feature and evidence of respectful participation. Adapt the threshold to local programme policy.',
       filter: 'Show',
-      days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+      days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      presentation: '🎤 Present these slides to the kids',
+      presentationTitle: 'Session presentation',
+      slideOf: 'Slide',
+      previousSlide: '← Back',
+      nextSlide: 'Next →',
+      finishPresentation: 'Finish',
+      closePresentation: 'Close presentation',
+      fullScreen: '⛶ Full screen',
+      exitFullScreen: '⛶ Exit full screen',
+      thinkAbout: '💬 Talk about it',
+      presentationError: 'Full screen is unavailable in this browser.'
     },
     ar: {
       week: 'الأسبوع', session: 'الحصة', objective: 'هدف التعلم',
@@ -71,7 +82,18 @@ window.FORMATION_COURSE = {
       assessmentText: 'استخدموا التقييم الأولي لمعرفة مستوى المشاركين، وأسئلة نهاية الحصة لتعديل الشرح، وعروض نهاية الأسبوع لمتابعة التقدم، ثم سلم التقييم للمشروع النهائي. أعطوا كل مشارك ملاحظات محددة ولطيفة وخطوة تالية.',
       rubric: ['عمل المزايا وتحقيق المطلوب — ٣٠٪', 'جودة الكود وGit ومراجعة الزملاء — ٢٠٪', 'الاختبارات وسهولة الاستخدام والاعتمادية — ٢٠٪', 'وضوح العرض والتواصل — ١٥٪', 'التأمل والعمل الجماعي والخطوة التالية — ١٥٪'],
       rubricPass: 'اقتراح للإتمام: ٧٠٪ على الأقل، مع ميزة أساسية تعمل ومشاركة محترمة. عدّلوا النسبة وفق سياسة البرنامج.',
-      filter: 'عرض', days: ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة']
+      filter: 'عرض', days: ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+      presentation: '🎤 اعرض هذه الشرائح للأطفال',
+      presentationTitle: 'عرض الحصة',
+      slideOf: 'الشريحة',
+      previousSlide: '→ السابق',
+      nextSlide: 'التالي ←',
+      finishPresentation: 'إنهاء',
+      closePresentation: 'إغلاق العرض',
+      fullScreen: '⛶ ملء الشاشة',
+      exitFullScreen: '⛶ إنهاء ملء الشاشة',
+      thinkAbout: '💬 لنتحدث',
+      presentationError: 'ملء الشاشة غير متاح في هذا المتصفح.'
     }
   },
   weeks: [

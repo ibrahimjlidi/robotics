@@ -1,10 +1,12 @@
 # Four-Week Full-Stack Web Development Formation
 
-An instructor guide for a practical, 20-session programme based on the four focus areas supplied for this formation. The intended cohort has a bachelor's-level background in Computer Science, Computer Engineering, or Software Development and entry-level knowledge of HTML/HTML5, programming fundamentals, full-stack development, and software frameworks.
+An instructor guide for a practical, 20-session programme based on the four focus areas supplied for this formation. The intended cohort has a bachelor's-level background in Computer Science, Computer Engineering, or Software Development and entry-level knowledge of HTML/HTML5, programming fundamentals, full-stack development, and software frameworks. The app also includes a short bilingual presentation for each session, written for children and suitable for projecting and discussing together.
 
 **Schedule:** four weeks, Monday to Friday, three hours per session (60 contact hours total). Each session follows the same 180-minute rhythm; the remaining course time is for optional preparation, mentoring, and independent work.
 
 **Teaching approach:** diagnose before teaching, demonstrate a small idea, let learners build it, review evidence together, and give one specific next step. Keep the baseline diagnostic supportive rather than pass/fail. Adapt the pace from daily exit tickets.
+
+To present a session to children, open **Full-Stack Formation**, expand the session, and select **Present these slides to the kids** (English) or **اعرض هذه الشرائح للأطفال** (Arabic). Use the on-screen controls or arrow keys to move between slides; **Home** and **End** jump to the first and last slide. Choose **Full screen** for a projector, then press **Escape** to return.
 
 ## Learning outcomes
 
