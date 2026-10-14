@@ -300,3 +300,186 @@ window.FORMATION_LESSONS = [
     answer: {en:'Answers are personal. Make the next step small, safe, and specific, such as “On Saturday I will add one accessible photo caption to my club page.”',ar:'الإجابة شخصية. اجعل الخطوة صغيرة وآمنة ومحددة، مثل: «يوم السبت سأضيف وصفًا واضحًا لصورة في صفحة النادي».'}
   }
 ];
+
+window.FORMATION_EXERCISES = [
+  {
+    task: {en:'Plan the first screen of the club website for a new member.',ar:'خطط لأول شاشة في موقع النادي لعضو جديد.'},
+    steps: {
+      en:['Write who will use the page and what they need to find.','Sketch a heading, one useful detail, and one next action.','Write three checks a partner can use to see whether the page answers the visitor’s need.'],
+      ar:['اكتب من سيستخدم الصفحة وما المعلومة التي يبحث عنها.','ارسم عنوانًا ومعلومة مفيدة وخطوة تالية.','اكتب ثلاثة أشياء يفحصها زميل ليتأكد أن الصفحة تساعد الزائر.']
+    },
+    check: {en:'A new member can tell what the club is, when it meets, and what to do next.',ar:'يستطيع العضو الجديد معرفة النادي وموعد اللقاء وما الخطوة التالية.'},
+    sample: {en:'Example: “Art Club” heading, “Friday at 3:00” detail, and a “See what to bring” link. The checks should match the visitor’s needs.',ar:'مثال: عنوان «نادي الفن»، ومعلومة «الجمعة الساعة ٣»، ورابط «ماذا نحضر؟». يجب أن تناسب الفحوص حاجة الزائر.'}
+  },
+  {
+    task: {en:'Write a welcome message that changes when the club has no open places.',ar:'اكتب رسالة ترحيب تتغير عندما لا توجد أماكن شاغرة في النادي.'},
+    steps: {
+      en:['Create a const variable named placesLeft and set it to 3.','Use if and else to choose “Join us” or “The club is full”.','Change placesLeft to 0, run the program, and check that the other message appears.'],
+      ar:['أنشئ متغير const اسمه placesLeft واجعل قيمته 3.','استخدم if وelse لاختيار «انضم إلينا» أو «النادي ممتلئ».','غيّر placesLeft إلى 0 وشغّل البرنامج وتأكد من ظهور الرسالة الأخرى.']
+    },
+    check: {en:'Three places show the invitation; zero places show the full message.',ar:'عند وجود ٣ أماكن تظهر الدعوة، وعند وجود صفر تظهر رسالة الامتلاء.'},
+    sample: {en:'Use `if (placesLeft > 0) { console.log("Join us"); } else { console.log("The club is full"); }` and test both values.',ar:'استخدم `if (placesLeft > 0) { console.log("Join us"); } else { console.log("The club is full"); }` ثم جرّب القيمتين.'}
+  },
+  {
+    task: {en:'Save the first club home page as a clear Git checkpoint.',ar:'احفظ أول صفحة للنادي في Git كنقطة رجوع واضحة.'},
+    steps: {
+      en:['Open the club-site project folder in the terminal and run git status.','Add the changed page with git add index.html.','Commit it with a message that says what the page contains, then run git log --oneline.'],
+      ar:['افتح مجلد club-site في الطرفية وشغّل git status.','أضف الصفحة التي غيرتها باستخدام git add index.html.','احفظها برسالة توضح محتوى الصفحة ثم شغّل git log --oneline.']
+    },
+    check: {en:'Git shows a commit with a useful message, and git status has no page change waiting to be saved.',ar:'يعرض Git تغييرًا محفوظًا برسالة مفيدة، ولا يظهر git status تغييرًا ينتظر الحفظ.'},
+    sample: {en:'A good message is “Add club meeting details”. If Git reports an identity error, ask the instructor to help configure it; do not guess an email address.',ar:'رسالة جيدة: «إضافة معلومات لقاء النادي». إذا ظهر خطأ في إعداد الاسم، اطلب مساعدة المدرس ولا تخمن عنوان بريد.'}
+  },
+  {
+    task: {en:'Make a meeting-message function that handles a missing day.',ar:'أنشئ دالة لرسالة اللقاء تتعامل مع اليوم المفقود.'},
+    steps: {
+      en:['Write the plan in words: check the day, show a reminder if it is empty, otherwise make the meeting message.','Create a function named describeMeeting with a day parameter.','Test it with an empty string and with “Friday”; compare both results with your plan.'],
+      ar:['اكتب الخطة: افحص اليوم، واعرض تذكيرًا إذا كان فارغًا، وإلا اكتب رسالة اللقاء.','أنشئ دالة اسمها describeMeeting تستقبل اليوم.','جرّب نصًا فارغًا وجرّب Friday، ثم قارن النتيجتين بالخطة.']
+    },
+    check: {en:'The empty day gives a helpful reminder; Friday gives a complete meeting message.',ar:'يعرض اليوم الفارغ تذكيرًا مفيدًا، ويعرض Friday رسالة لقاء كاملة.'},
+    sample: {en:'Return “Add a meeting day” when day is empty; otherwise return a sentence such as “We meet on Friday”.',ar:'أعد «أضف يوم اللقاء» عندما يكون اليوم فارغًا، وإلا أعد جملة مثل «نلتقي يوم Friday».'}
+  },
+  {
+    task: {en:'Build a small HTML club information page with a clear structure.',ar:'أنشئ صفحة HTML صغيرة فيها معلومات النادي مرتبة بوضوح.'},
+    steps: {
+      en:['Create index.html with doctype, html, head, title, and body.','Add one h1 for the club name and a main section with the meeting day.','Add a “What to bring” section with an h2 and a list of two items, then open the page in a browser.'],
+      ar:['أنشئ index.html وفيه doctype وhtml وhead وtitle وbody.','أضف h1 لاسم النادي وقسم main لموعد اللقاء.','أضف قسم «ماذا نحضر؟» بعنوان h2 وقائمة من شيئين، ثم افتح الصفحة في المتصفح.']
+    },
+    check: {en:'The browser shows one main heading, meeting information, and two separate list items.',ar:'يعرض المتصفح عنوانًا رئيسيًا ومعلومات اللقاء وعنصرين منفصلين في القائمة.'},
+    sample: {en:'Use main for the key information, h1 for the club name, and ul with two li elements for supplies.',ar:'استخدم main للمعلومات المهمة وh1 لاسم النادي وul بداخلها عنصرا li للأدوات.'}
+  },
+  {
+    task: {en:'Create an accessible sign-up form that checks a pretend member’s name.',ar:'أنشئ نموذج انضمام سهل الاستخدام يفحص اسم عضو خيالي.'},
+    steps: {
+      en:['Add a form, a name label, and a text input; make the label’s for match the input id.','Mark the input required and add a submit button plus a polite message area.','Try to submit it empty, then enter a made-up name; explain what the browser does in each case.'],
+      ar:['أضف form وعنوانًا للاسم وحقل كتابة، واجعل for في العنوان مثل id في الحقل.','اجعل الحقل required وأضف زر إرسال ومكانًا لرسالة هادئة.','حاول الإرسال والحقل فارغ، ثم اكتب اسمًا خياليًا واشرح ما فعله المتصفح.']
+    },
+    check: {en:'The field has a working label, the browser blocks an empty name, and the practice uses no real personal details.',ar:'للحقل عنوان مرتبط به، ويمنع المتصفح إرسال الاسم الفارغ، ولا تستخدم معلومات شخص حقيقية.'},
+    sample: {en:'Connect `<label for="name">` to `<input id="name" required>`. Use only pretend details in class and never publish real addresses.',ar:'اربط `<label for="name">` بـ `<input id="name" required>`. استخدموا معلومات خيالية ولا تنشروا عناوين حقيقية.'}
+  },
+  {
+    task: {en:'Style the club page so it stays readable on a phone and a wide screen.',ar:'نسّق صفحة النادي لتبقى واضحة على الهاتف والشاشة الكبيرة.'},
+    steps: {
+      en:['Connect style.css to the HTML page and choose readable text and background colours.','Give main a maximum width, centred margin, and enough padding.','Resize the browser to a narrow width; adjust the CSS until text fits without sideways scrolling.'],
+      ar:['اربط style.css بصفحة HTML واختر لون كتابة وخلفية واضحين.','اجعل عرض main محدودًا وفي الوسط، وأضف مسافة داخلية مناسبة.','صغّر عرض المتصفح وعدّل CSS حتى تلائم الكتابة الشاشة دون تمرير جانبي.']
+    },
+    check: {en:'The text is easy to read and no content needs horizontal scrolling on a phone-sized screen.',ar:'الكتابة واضحة ولا تحتاج الصفحة إلى تمرير أفقي على شاشة بحجم الهاتف.'},
+    sample: {en:'Use a comfortable max-width and padding. There are many good colour choices; check that text and buttons remain easy to distinguish.',ar:'استخدم عرضًا أقصى مناسبًا ومسافة داخلية. توجد ألوان كثيرة مناسبة؛ تأكد من وضوح النص والأزرار.'}
+  },
+  {
+    task: {en:'Use JavaScript data and a function to find the club events happening on Friday.',ar:'استخدم بيانات JavaScript ودالة لإيجاد فعاليات النادي التي تحدث يوم الجمعة.'},
+    steps: {
+      en:['Create an array with three pretend event objects; each needs a title and day.','Write a small function that filters the array to events whose day is Friday.','Print the matching titles and try changing one event to a different day.'],
+      ar:['أنشئ مصفوفة فيها ثلاث فعاليات خيالية، ولكل واحدة عنوان ويوم.','اكتب دالة صغيرة تختار الفعاليات التي يومها Friday.','اطبع العناوين المطابقة وغيّر يوم فعالية واحدة لتجربة النتيجة.']
+    },
+    check: {en:'Only Friday events appear, and changing an event’s day changes the results.',ar:'تظهر فعاليات الجمعة فقط، ويتغير الناتج عندما تغيّر يوم فعالية.'},
+    sample: {en:'Use `events.filter(event => event.day === "Friday")`, then map the result to its titles. Test with no Friday events too.',ar:'استخدم `events.filter(event => event.day === "Friday")` ثم استخرج العناوين. جرّب أيضًا عدم وجود فعالية يوم الجمعة.'}
+  },
+  {
+    task: {en:'Make the sign-up form respond to a button click with helpful feedback.',ar:'اجعل نموذج الانضمام يرد على الضغط برسالة مفيدة.'},
+    steps: {
+      en:['Add a button and an empty message element with an id.','Write a JavaScript function that reads the pretend name and checks whether it is empty.','Connect the function with addEventListener, then test an empty value and a made-up name.'],
+      ar:['أضف زرًا وعنصر رسالة فارغًا له id.','اكتب دالة JavaScript تقرأ الاسم الخيالي وتفحص إن كان فارغًا.','اربط الدالة باستخدام addEventListener، ثم جرّب قيمة فارغة واسمًا خياليًا.']
+    },
+    check: {en:'Clicking the button gives an honest, useful message for both empty and filled input.',ar:'يعطي الضغط على الزر رسالة صادقة ومفيدة عند ترك الحقل فارغًا وعند ملئه.'},
+    sample: {en:'Show “Please add a name” for an empty field and “Welcome to the club!” for a pretend name. Put the message in textContent.',ar:'اعرض «أضف اسمًا من فضلك» للحقل الفارغ و«أهلًا بك في النادي!» للاسم الخيالي. استخدم textContent للرسالة.'}
+  },
+  {
+    task: {en:'Request the club’s event list from the prepared API and handle waiting and errors.',ar:'اطلب قائمة فعاليات النادي من API الجاهز وتعامل مع الانتظار والأخطاء.'},
+    steps: {
+      en:['Show “Loading events…” before making the request.','Use fetch and await to request the prepared events URL; check response.ok before reading JSON.','Display the events when successful; try an unavailable URL and show a clear error instead.'],
+      ar:['اعرض «جارٍ تحميل الفعاليات…» قبل إرسال الطلب.','استخدم fetch وawait لطلب عنوان الفعاليات الجاهز، وافحص response.ok قبل قراءة JSON.','اعرض الفعاليات عند النجاح، ثم جرّب عنوانًا غير متاح واعرض رسالة خطأ واضحة.']
+    },
+    check: {en:'The page distinguishes loading, success, and failure; a failed request is never shown as successful.',ar:'تميّز الصفحة بين الانتظار والنجاح والفشل، ولا تعرض الطلب الفاشل على أنه ناجح.'},
+    sample: {en:'Use a try/catch for the request, test `response.ok`, and show a helpful retry message if the server cannot be reached.',ar:'استخدم try/catch للطلب وافحص `response.ok` واعرض رسالة مفيدة لإعادة المحاولة إذا تعذر الوصول للخادم.'}
+  },
+  {
+    task: {en:'Develop one event-card change on a Git branch and ask for a useful review.',ar:'طوّر تغيير بطاقة فعالية في فرع Git واطلب مراجعة مفيدة.'},
+    steps: {
+      en:['Create a branch named for the event-card change and check git status.','Make one small page change and inspect git diff to see exactly what changed.','Commit with a clear message and write one kind review question your teammate can test.'],
+      ar:['أنشئ فرعًا باسم يوضح تغيير بطاقة الفعالية وافحص git status.','أجرِ تغييرًا صغيرًا واحدًا وافحص git diff لترى ما تغير.','احفظه برسالة واضحة واكتب سؤال مراجعة لطيفًا يستطيع زميل اختباره.']
+    },
+    check: {en:'The change is saved on its own branch and the review asks about a specific behaviour, not the person.',ar:'التغيير محفوظ في فرعه، وسؤال المراجعة عن سلوك محدد لا عن الشخص.'},
+    sample: {en:'Example review: “Could we check how the card looks when the event has no day?” Include the changed file in the commit.',ar:'مثال مراجعة: «هل نفحص شكل البطاقة عندما لا يكون للفعالية يوم؟». أضف الملف الذي غيرته إلى commit.'}
+  },
+  {
+    task: {en:'Write tests for counting open club tasks, including an edge case.',ar:'اكتب اختبارات لحساب مهام النادي المفتوحة، ومنها حالة خاصة.'},
+    steps: {
+      en:['Write countOpen so it counts tasks whose done value is false.','Test an empty list and a list with one open and one completed task.','Change one expected result on purpose, run the test to see it fail, then restore the correct result.'],
+      ar:['اكتب countOpen لتحسب المهام التي قيمة done فيها false.','اختبر قائمة فارغة وقائمة فيها مهمة مفتوحة وأخرى مكتملة.','غيّر نتيجة متوقعة عمدًا وشغّل الاختبار لترى الفشل، ثم أعد النتيجة الصحيحة.']
+    },
+    check: {en:'Both correct tests pass, and the empty-list case returns zero.',ar:'ينجح الاختباران الصحيحان، وتعيد حالة القائمة الفارغة صفرًا.'},
+    sample: {en:'A passing expectation is `countOpen([]) === 0`; with one open and one done task, expect 1. A failing test should show which check needs attention.',ar:'التوقع الصحيح `countOpen([]) === 0`؛ ومع مهمة مفتوحة وأخرى مكتملة تكون النتيجة 1. يجب أن يوضح الاختبار الفاشل أي فحص يحتاج إصلاحًا.'}
+  },
+  {
+    task: {en:'Build a reusable React event card and update the list when a button is pressed.',ar:'أنشئ بطاقة فعالية قابلة لإعادة الاستخدام في React وحدّث القائمة عند الضغط.'},
+    steps: {
+      en:['Create an EventCard component that receives one event as a prop and shows its title and day.','Store two pretend events in useState and render a card for each with map and a unique key.','Add a button that appends a third event through the state setter; click it and observe the new card.'],
+      ar:['أنشئ EventCard يستقبل فعالية عبر prop ويعرض عنوانها ويومها.','احفظ فعاليتين خياليتين في useState واعرض بطاقة لكل واحدة باستخدام map وkey مميز.','أضف زرًا يضيف فعالية ثالثة باستخدام setter، ثم اضغطه وشاهد البطاقة الجديدة.']
+    },
+    check: {en:'Two cards appear first; clicking the button adds a third without reloading the page.',ar:'تظهر بطاقتان أولًا، ثم تضيف الضغطة بطاقة ثالثة دون إعادة تحميل الصفحة.'},
+    sample: {en:'Keep events in `useState`, render `events.map(event => <EventCard key={event.id} event={event} />)`, and append with the setter’s current-state callback.',ar:'احفظ الفعاليات في `useState` واعرضها بـ `events.map(event => <EventCard key={event.id} event={event} />)` وأضف باستخدام setter مع القيمة الحالية.'}
+  },
+  {
+    task: {en:'Use an AI coding helper safely to improve one small club-site function.',ar:'استخدم أداة برمجة ذكية بأمان لتحسين دالة صغيرة في موقع النادي.'},
+    steps: {
+      en:['Choose a short function that contains no real names, passwords, or private data.','Ask the approved helper to explain it or suggest one extra test.','Check the suggestion against the code and trusted documentation, then run the test before deciding whether to keep it.'],
+      ar:['اختر دالة قصيرة لا تحتوي أسماء حقيقية أو كلمات مرور أو معلومات خاصة.','اطلب من الأداة المعتمدة شرحها أو اقتراح اختبار إضافي.','قارن الاقتراح بالكود والوثائق الموثوقة، ثم شغّل الاختبار قبل أن تقرر استخدامه.']
+    },
+    check: {en:'Your note states what the helper suggested, how you checked it, and whether it was correct; no private information was shared.',ar:'توضح ملاحظتك اقتراح الأداة وكيف فحصته وهل كان صحيحًا، ولم تشارك أي معلومة خاصة.'},
+    sample: {en:'A good result might say: “The helper suggested testing an empty list. I ran that test and checked the function; the suggestion was useful.” Never accept code without checking it.',ar:'مثال جيد: «اقترحت الأداة اختبار القائمة الفارغة. شغّلت الاختبار وفحصت الدالة وكان الاقتراح مفيدًا». لا تستخدم كودًا دون فحصه.'}
+  },
+  {
+    task: {en:'Turn one club visitor need into a small, testable project task.',ar:'حوّل حاجة زائر واحد للنادي إلى مهمة صغيرة يمكن اختبارها.'},
+    steps: {
+      en:['Write who the visitor is and what information they need.','Write a user story: “As a…, I want…, so that…”.','Add three yes/no checks that describe what the visitor should see or be able to do.'],
+      ar:['اكتب من هو الزائر وما المعلومة التي يحتاجها.','اكتب قصة مستخدم: «بصفتي… أريد… لكي…».','أضف ثلاثة فحوص بنعم أو لا تصف ما يجب أن يراه الزائر أو يفعله.']
+    },
+    check: {en:'A teammate can use the checks to decide whether the small feature is finished.',ar:'يستطيع زميل استخدام الفحوص ليقرر هل انتهت الميزة الصغيرة.'},
+    sample: {en:'Example: “As a new member, I want to see the next meeting time so I can arrive on time.” Checks: day visible, time visible, readable on a phone.',ar:'مثال: «كعضو جديد أريد رؤية موعد اللقاء القادم كي أصل في الوقت». الفحوص: اليوم ظاهر، والساعة ظاهرة، والصفحة واضحة على الهاتف.'}
+  },
+  {
+    task: {en:'Build and test one complete club feature from the visitor’s point of view.',ar:'ابنِ واختبر ميزة كاملة واحدة في النادي من وجهة نظر الزائر.'},
+    steps: {
+      en:['Choose one small feature and write what a visitor should be able to do.','Build the page interaction using the provided sample data or prepared service.','Ask a partner to try it without instructions; fix one confusing or broken step and try again.'],
+      ar:['اختر ميزة صغيرة واكتب ما الذي يجب أن يستطيع الزائر فعله.','ابنِ التفاعل باستخدام بيانات التدريب أو الخدمة الجاهزة.','اطلب من زميل تجربتها دون شرح؛ أصلح خطوة مربكة أو معطلة ثم جرّب مرة أخرى.']
+    },
+    check: {en:'A visitor can complete the feature, and the page gives a clear result even when there is no event yet.',ar:'يستطيع الزائر إكمال الميزة، وتعرض الصفحة نتيجة واضحة حتى إذا لم توجد فعالية بعد.'},
+    sample: {en:'For an event list, show each event and a “No events yet” message for an empty list. Do not show a broken card or pretend missing data loaded.',ar:'في قائمة الفعاليات اعرض كل فعالية ورسالة «لا توجد فعاليات بعد» إذا كانت القائمة فارغة. لا تعرض بطاقة مكسورة أو معلومات لم تصل.'}
+  },
+  {
+    task: {en:'Add one new pretend event through the API and save it safely in SQLite.',ar:'أضف فعالية خيالية جديدة عبر API واحفظها بأمان في SQLite.'},
+    steps: {
+      en:['Send a POST request with a pretend event title to the prepared /api/events route.','On the server, trim and validate the title; return status 400 for an empty one.','Insert a valid title with a SQL placeholder, then fetch the list again and check that the event appears.'],
+      ar:['أرسل طلب POST بعنوان فعالية خيالي إلى المسار الجاهز /api/events.','في الخادم، نظف العنوان وافحصه؛ وأعد الرمز 400 إذا كان فارغًا.','احفظ العنوان الصحيح بعلامة SQL نائبة، ثم اقرأ القائمة ثانية وتأكد من ظهور الفعالية.']
+    },
+    check: {en:'A valid event returns a success response and appears in the list; an empty title returns an error and is not saved.',ar:'يعيد العنوان الصحيح جواب نجاح ويظهر في القائمة؛ أما العنوان الفارغ فيعيد خطأ ولا يُحفظ.'},
+    sample: {en:'Validate before saving, use a parameter such as `VALUES (?)`, and return a clear error if SQLite fails. Never report success when the save did not work.',ar:'افحص البيانات قبل الحفظ واستخدم متغيرًا مثل `VALUES (?)` وأعد خطأ واضحًا إذا تعذر الحفظ. لا تقل إن الحفظ نجح إذا لم ينجح.'}
+  },
+  {
+    task: {en:'Prepare a reliable demo of the club project and help another person run it.',ar:'جهّز عرضًا موثوقًا لمشروع النادي وساعد شخصًا آخر على تشغيله.'},
+    steps: {
+      en:['Run the project instructions from the README and note any missing command or setup step.','Check the core feature, empty input, loading/error feedback, narrow-screen layout, and tests.','Ask a teammate to follow the README without help; improve one unclear instruction and confirm no secret keys or passwords are included.'],
+      ar:['شغّل المشروع حسب README وسجل أي أمر أو خطوة إعداد ناقصة.','افحص الميزة الأساسية والمدخل الفارغ ورسائل الانتظار والخطأ وشاشة الهاتف والاختبارات.','اطلب من زميل اتباع README دون مساعدة؛ حسّن تعليمة غامضة وتأكد من عدم وجود كلمات مرور أو مفاتيح سرية.']
+    },
+    check: {en:'A teammate can follow the updated README, the core checks are recorded, and any known failure is reported honestly.',ar:'يستطيع زميل اتباع README بعد تحديثه، والفحوص الأساسية مسجلة، وأي مشكلة معروفة موضحة بصدق.'},
+    sample: {en:'Write the exact install and start commands plus one test command. Keep a checklist of the feature, error case, phone layout, tests, and privacy scan.',ar:'اكتب أوامر التثبيت والتشغيل والاختبار بدقة. احتفظ بقائمة للميزة وحالة الخطأ وشاشة الهاتف والاختبارات وفحص الخصوصية.'}
+  },
+  {
+    task: {en:'Rehearse a short project demo and practise giving kind, useful feedback.',ar:'تدرّب على عرض قصير للمشروع وعلى تقديم ملاحظة لطيفة ومفيدة.'},
+    steps: {
+      en:['Prepare a one-minute path: name the visitor, show the feature, and describe the result.','Practise answering one question with evidence from the running project or code.','Ask a partner for one strength and one question; write one small change you can make before the final demo.'],
+      ar:['حضّر عرضًا لدقيقة: عرّف الزائر واعرض الميزة واشرح النتيجة.','تدرّب على جواب سؤال بدليل من المشروع أو الكود.','اطلب من زميل ذكر نقطة قوة وسؤال؛ واكتب تغييرًا صغيرًا قبل العرض النهائي.']
+    },
+    check: {en:'The demo fits one minute, shows a real working feature, and ends with one specific next step.',ar:'ينتهي العرض خلال دقيقة ويعرض ميزة تعمل فعلًا ويذكر خطوة تالية محددة.'},
+    sample: {en:'“Our site helps new club members. Here is the meeting card; this button adds a pretend event. Next we will improve the empty-list message.”',ar:'«يساعد موقعنا أعضاء النادي الجدد. هذه بطاقة الموعد، وهذا الزر يضيف فعالية خيالية. خطوتنا التالية تحسين رسالة القائمة الفارغة».'}
+  },
+  {
+    task: {en:'Deliver a final club-site showcase that explains the work and one next learning goal.',ar:'قدّم عرضًا نهائيًا لموقع النادي واشرح العمل وهدفًا تاليًا للتعلم.'},
+    steps: {
+      en:['Introduce the visitor and the need your project helps with.','Run the feature and explain one code choice in everyday words.','Share one thing the team learned, thank a teammate, and name a small goal for the next 30 days.'],
+      ar:['عرّف الزائر والحاجة التي يساعد المشروع فيها.','شغّل الميزة واشرح قرارًا برمجيًا بكلمات سهلة.','اذكر ما تعلمه الفريق واشكر زميلًا وحدد هدفًا صغيرًا خلال الثلاثين يومًا القادمة.']
+    },
+    check: {en:'The audience sees the feature working, hears one clear explanation, and learns what the team will do next.',ar:'يشاهد الجمهور الميزة وهي تعمل ويسمع شرحًا واضحًا ويعرف الخطوة القادمة للفريق.'},
+    sample: {en:'Use the real app for the demo. Be honest about anything not tested yet; a useful next goal is small, safe, and specific.',ar:'استخدم التطبيق الحقيقي في العرض. كن صادقًا بشأن ما لم تختبره؛ واجعل الهدف التالي صغيرًا وآمنًا ومحددًا.'}
+  }
+];
