@@ -37,6 +37,46 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:13px}
 ul{margin:6px 0 0;padding-left:18px;color:var(--mut);font-size:13px}
 h2,h3{font-size:14px;margin:0 0 6px}
 .learn-shell{max-width:1100px;margin:16px auto;padding:0 14px 18px}
+.formation-shell{max-width:1100px;margin:16px auto;padding:0 14px 24px}
+.formation-hero{padding:26px;background:linear-gradient(120deg,#312e81,#4f46e5 55%,#0891b2);color:#fff;border:0}
+.formation-hero h2{font-size:clamp(25px,4vw,38px);line-height:1.15;margin:9px 0}
+.formation-hero p{max-width:800px;color:#e0e7ff}
+.formation-stats,.formation-week-nav{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.formation-stats span,.formation-week-nav button{padding:7px 11px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--fg);font-size:13px;font-weight:650}
+.formation-hero .formation-stats span{border-color:#ffffff55;background:#ffffff20;color:#fff}
+.formation-week-nav button.active{background:var(--ac);border-color:var(--ac);color:#fff}
+.formation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:14px}
+.formation-card{padding:18px}
+.formation-card h3{font-size:17px;margin-bottom:9px}
+.formation-card p,.formation-card li{color:var(--mut)}
+.formation-card ul{font-size:14px;line-height:1.7}
+.formation-progress{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;margin-top:14px}
+.formation-progress progress{width:100%;height:12px;grid-column:1/-1;accent-color:var(--ac)}
+.formation-status{min-height:1.5em;color:#b42318;font-size:13px}
+.formation-week{margin-top:20px;scroll-margin-top:20px}
+.formation-week>h2{font-size:22px}
+.formation-week>p{color:var(--mut)}
+.formation-session{margin:10px 0;padding:0 15px;border:1px solid var(--bd);border-radius:12px;background:var(--card)}
+.formation-session summary{display:flex;align-items:center;gap:12px;min-height:62px;cursor:pointer;list-style:none}
+.formation-session summary::-webkit-details-marker{display:none}
+.formation-session summary:before{content:"+";display:grid;place-items:center;width:30px;height:30px;flex:none;border-radius:9px;background:var(--bg);color:var(--ac);font-weight:800}
+.formation-session[open] summary:before{content:"−"}
+.formation-session-heading{flex:1}
+.formation-session-heading strong{display:block;color:var(--fg);font-size:16px}
+.formation-session-heading small{color:var(--mut)}
+.formation-session-body{padding:0 0 16px}
+.formation-session-body h4{margin:14px 0 4px}
+.formation-session-body p{margin:5px 0;color:var(--mut)}
+.formation-session-body ol{padding-inline-start:24px;color:var(--mut)}
+.formation-session-body li{margin:5px 0}
+.formation-session-footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.formation-session-footer button{padding:8px 12px}
+.formation-session-footer .is-complete{background:#ecfdf3;border-color:#86efac;color:#166534}
+.formation-rubric{width:100%;border-collapse:collapse}
+.formation-rubric th,.formation-rubric td{padding:9px;text-align:start;border-bottom:1px solid var(--bd)}
+html[dir="rtl"] .formation-session summary{direction:rtl}
+html[dir="rtl"] .formation-session-body ol{padding-inline-start:0;padding-inline-end:24px}
+@media(max-width:600px){.formation-hero{padding:20px}.formation-session{padding:0 11px}.formation-session summary{gap:8px}.formation-session-heading strong{font-size:14px}}
 .course-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr);gap:20px;align-items:center;padding:24px;background:linear-gradient(120deg,#173b82,#2563eb 55%,#7c3aed);color:#fff;border:0;overflow:hidden}
 .course-hero p{max-width:620px;color:#e0eaff}
 .course-hero h2{font-size:clamp(24px,4vw,36px);line-height:1.15;margin-bottom:10px}
@@ -267,6 +307,7 @@ html[dir="rtl"] .project-note{border-left:0;border-right:4px solid #d97706}
   <div class="nav">
     <button id="show-sim" class="p">Simulator</button>
     <button id="show-learn">Learn Robotics</button>
+    <button id="show-formation">Full-Stack Formation</button>
     <button id="show-project">Real-World Project</button>
     <button id="language-toggle" type="button" aria-label="Switch language to Arabic">العربية</button>
   </div>
@@ -719,6 +760,7 @@ if (L === R) {
 <section id="session-view" class="app-view hidden session-shell">
   <div id="session-content"></div>
 </section>
+<section id="formation-view" class="app-view hidden formation-shell"></section>
 <section id="project-view" class="app-view hidden project-shell">
   <div class="card project-hero">
     <span class="course-tag" data-i18n-en="Real hardware · beginner build" data-i18n-ar="روبوت حقيقي · مشروع للمبتدئين">Real hardware · beginner build</span>
@@ -921,6 +963,7 @@ void loop() {
   </div>
 </section>
 <script type="module" src="/robot-scene.js"></script>
+<script src="/formation-course.js"></script>
 <script>
 const W=640,H=420,cv=document.getElementById('c'),ctx=cv.getContext('2d');
 const track=document.createElement('canvas');track.width=W;track.height=H;const tx=track.getContext('2d',{willReadFrequently:true});
@@ -1130,7 +1173,7 @@ document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Tab')
 const $=id=>document.getElementById(id);
 const simView=$('sim-view'),learnView=$('learn-view'),sessionView=$('session-view');
 function showView(name){
-  const views={sim:simView,learn:learnView,session:sessionView,project:$('project-view')};
+  const views={sim:simView,learn:learnView,session:sessionView,formation:$('formation-view'),project:$('project-view')};
   for(const [viewName,element] of Object.entries(views)){
     element.classList.toggle('hidden',viewName!==name);
     const navName=viewName==='project'?'project':viewName==='session'?'learn':viewName;
@@ -1142,6 +1185,7 @@ function clearSessionHash(){
 }
 $('show-sim').onclick=()=>{clearSessionHash();showView('sim')};
 $('show-learn').onclick=()=>{clearSessionHash();showView('learn')};
+$('show-formation').onclick=()=>{clearSessionHash();showView('formation');window.scrollTo({top:0,behavior:'smooth'})};
 $('show-project').onclick=()=>{clearSessionHash();showView('project')};
 $('gift-close').onclick=()=>$('gift-message').close();
 const lessonPrograms=[
@@ -1566,7 +1610,7 @@ const lessonDeep=[
 const interfaceText={
   en:{
     title:'🤖 Robot Simulator',tagline:'Write code, press Run, and watch your robot sense, think and act.',
-    simulator:'Simulator',learn:'Learn Robotics',project:'Real-World Project',
+    simulator:'Simulator',learn:'Learn Robotics',formation:'Full-Stack Formation',project:'Real-World Project',
     sensorHint:'Drag the 3D scene to rotate the camera; scroll to zoom. The red line shows the distance sensor, not a barrier. If an obstacle is close, the robot must reverse and turn to move away.',
     giftHint:'Gift mission: press Run and the robot will follow a safe route around obstacles. Press Reset to try again.',
     run:'▶ Run',pause:'⏸ Pause',reset:'↺ Reset',forward:'↑ Forward',back:'↓ Back',left:'← Left',right:'Right →',
@@ -1588,7 +1632,7 @@ const interfaceText={
   },
   ar:{
     title:'🤖 محاكي الروبوت',tagline:'اكتب التعليمات، واضغط ابدأ، وشاهد الروبوت يتحرك ويتعلم.',
-    simulator:'المحاكي',learn:'تعلّم الروبوتات',project:'مشروع عملي',
+    simulator:'المحاكي',learn:'تعلّم الروبوتات',formation:'تكوين تطوير الويب',project:'مشروع عملي',
     sensorHint:'اسحب المشهد ثلاثي الأبعاد لتدوير الكاميرا، واستخدم عجلة الفأرة للتقريب. يبيّن الخط الأحمر اتجاه الحساس وليس حاجزًا. إذا اقترب الروبوت من عائق، يرجع ثم ينعطف.',
     giftHint:'مهمة الهدية: اضغط ابدأ ليتبع الروبوت طريقًا آمنًا. اضغط إعادة ليحاول من جديد.',
     run:'▶ ابدأ',pause:'⏸ توقّف',reset:'↺ إعادة',forward:'↑ إلى الأمام',back:'↓ إلى الخلف',left:'← يسار',right:'يمين →',
@@ -1624,6 +1668,7 @@ function setLanguage(nextLanguage){
   $('app-tagline').textContent=text.tagline;
   $('show-sim').textContent=text.simulator;
   $('show-learn').textContent=text.learn;
+  $('show-formation').textContent=text.formation;
   $('show-project').textContent=text.project;
   $('language-toggle').textContent=text.languageButton;
   $('language-toggle').setAttribute('aria-label',text.languageLabel);
@@ -1671,6 +1716,7 @@ function setLanguage(nextLanguage){
     if(match)openSession(Number(match[1])-1,false);
   }
   try{localStorage.setItem('robot-sim-language',language)}catch{}
+  renderFormationCourse();
   sync();
 }
 const englishSummaries=lessonCards.map(lesson=>lesson.querySelector('p').textContent.trim());
@@ -1678,6 +1724,88 @@ const englishImageLabels=lessonCards.map(lesson=>lesson.querySelector('.lesson-a
 try{language=localStorage.getItem('robot-sim-language')==='ar'?'ar':'en'}catch{}
 function escapeHtml(value){
   return value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+function renderFormationCourse(){
+  const course=window.FORMATION_COURSE,view=$('formation-view'),rtl=language==='ar';
+  const text=course.labels[language],local=value=>escapeHtml(value[language]);
+  let completed=new Set(),storageError=false;
+  try{
+    const saved=JSON.parse(localStorage.getItem('full-stack-formation-progress')||'[]');
+    if(!Array.isArray(saved)||saved.some(index=>!Number.isInteger(index)||index<0||index>=20))storageError=true;
+    else completed=new Set(saved);
+  }catch{storageError=true}
+  const sessions=course.weeks.flatMap(week=>week.sessions);
+  const agenda=`<h4>${escapeHtml(text.agenda)}</h4><ol>${course.schedule[language].map(([name,minutes])=>`<li>${escapeHtml(name)} — ${minutes} ${rtl?'دقيقة':'min'}</li>`).join('')}</ol>`;
+  let globalIndex=0;
+  const weeks=course.weeks.map((week,weekIndex)=>{
+    const cards=week.sessions.map((session,dayIndex)=>{
+      const index=globalIndex++;
+      return `<details class="formation-session">
+        <summary><span class="formation-session-heading"><small>${escapeHtml(text.days[dayIndex])} · ${escapeHtml(text.session)} ${dayIndex+1}</small><strong>${local(session.title)}</strong></span></summary>
+        <div class="formation-session-body">
+          <h4>${escapeHtml(text.objective)}</h4><p>${local(session.objective)}</p>
+          <h4>${escapeHtml(text.activity)}</h4><p>${local(session.activity)}</p>
+          <h4>${escapeHtml(text.deliverable)}</h4><p>${local(session.deliverable)}</p>
+          <h4>${escapeHtml(text.prepare)}</h4><p>${local(session.prepare)}</p>
+          ${agenda}
+          <div class="formation-session-footer"><button type="button" class="formation-complete" data-session="${index}"></button></div>
+        </div>
+      </details>`;
+    }).join('');
+    return `<section class="formation-week" data-week="${weekIndex+1}" id="formation-week-${weekIndex+1}">
+      <h2>${escapeHtml(text.week)} ${rtl?['١','٢','٣','٤'][weekIndex]:weekIndex+1}: ${local(week.title)}</h2>
+      <p><strong>${escapeHtml(text.milestone)}:</strong> ${local(week.milestone)}</p>${cards}
+    </section>`;
+  }).join('');
+  view.innerHTML=`<div class="card formation-hero">
+    <span class="course-tag">${rtl?'تكوين عملي · ٤ أسابيع':'Practical training · 4 weeks'}</span>
+    <h2>${local(course.title)}</h2><p>${local(course.description)}</p>
+    <div class="formation-stats"><span>${rtl?'٢٠ حصة':'20 sessions'}</span><span>${rtl?'٣ ساعات لكل حصة':'3 hours per session'}</span><span>${rtl?'٦٠ ساعة تدريب':'60 contact hours'}</span></div>
+  </div>
+  <div class="formation-grid">
+    <article class="card formation-card"><h3>📋 ${escapeHtml(text.requirements)}</h3><ul>${course.requirements[language].map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul></article>
+    <article class="card formation-card"><h3>📈 ${escapeHtml(text.progress)}</h3><div class="formation-progress"><span id="formation-progress-label"></span><strong id="formation-progress-count"></strong><progress id="formation-progress-bar" max="${sessions.length}"></progress></div><p class="formation-status" id="formation-progress-status" role="status" aria-live="polite"></p></article>
+  </div>
+  <div class="formation-week-nav" aria-label="${rtl?'تصفية الأسابيع':'Filter course weeks'}">
+    <button type="button" class="active" data-course-filter="all">${escapeHtml(text.all)}</button>
+    ${course.weeks.map((week,index)=>`<button type="button" data-course-filter="${index+1}">${escapeHtml(text.week)} ${rtl?['١','٢','٣','٤'][index]:index+1}</button>`).join('')}
+  </div>
+  ${weeks}
+  <div class="formation-grid">
+    <article class="card formation-card"><h3>🚀 ${escapeHtml(text.capstone)}</h3><p>${escapeHtml(text.capstoneText)}</p></article>
+    <article class="card formation-card"><h3>✅ ${escapeHtml(text.assessment)}</h3><p>${escapeHtml(text.assessmentText)}</p><ul>${text.rubric.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul><p>${escapeHtml(text.rubricPass)}</p></article>
+  </div>`;
+  const progressLabel=$('formation-progress-label'),progressCount=$('formation-progress-count');
+  const progressBar=$('formation-progress-bar'),progressStatus=$('formation-progress-status');
+  progressLabel.textContent=text.completed;
+  const syncProgress=()=>{
+    progressCount.textContent=`${completed.size} / ${sessions.length}`;
+    progressBar.value=completed.size;
+    progressBar.setAttribute('aria-label',`${escapeHtml(text.progress)}: ${completed.size} / ${sessions.length}`);
+    progressStatus.textContent=storageError?text.progressError:'';
+    view.querySelectorAll('.formation-complete').forEach(button=>{
+      const isComplete=completed.has(Number(button.dataset.session));
+      button.textContent=isComplete?`✓ ${text.done}`:text.mark;
+      button.classList.toggle('is-complete',isComplete);
+      button.setAttribute('aria-pressed',String(isComplete));
+    });
+  };
+  view.querySelectorAll('.formation-complete').forEach(button=>button.addEventListener('click',()=>{
+    const index=Number(button.dataset.session);
+    if(completed.has(index))completed.delete(index);else completed.add(index);
+    try{
+      localStorage.setItem('full-stack-formation-progress',JSON.stringify([...completed]));
+      storageError=false;
+    }catch{storageError=true}
+    syncProgress();
+  }));
+  view.querySelectorAll('[data-course-filter]').forEach(button=>button.addEventListener('click',()=>{
+    const selected=button.dataset.courseFilter;
+    view.querySelectorAll('[data-course-filter]').forEach(filter=>filter.classList.toggle('active',filter===button));
+    view.querySelectorAll('.formation-week').forEach(week=>week.hidden=selected!=='all'&&week.dataset.week!==selected);
+    if(selected!=='all')view.querySelector(`#formation-week-${selected}`).scrollIntoView({behavior:'smooth',block:'start'});
+  }));
+  syncProgress();
 }
 function startLesson(index){
   const program=lessonPrograms[index];
