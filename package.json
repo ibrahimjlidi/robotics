@@ -1,0 +1,1 @@
+{"name":"robot-simulator","version":"1.0.0","private":true,"scripts":{"dev":"npx serve .","start":"npx serve ."},"dependencies":{"three":"^0.186.1"}}

@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#2563eb"><title>Robot Simulator</title><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon-192.png"><link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1c2330;--mut:#667085;--bd:#d9dde5;--ac:#2563eb;--code:#0f172a;--codefg:#e2e8f0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141b;--card:#181e28;--fg:#e8ecf3;--mut:#93a0b4;--bd:#2a3342;--ac:#5b8cff}}
+:root[data-theme="dark"]{--bg:#10141b;--card:#181e28;--fg:#e8ecf3;--mut:#93a0b4;--bd:#2a3342;--ac:#5b8cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:14px 18px;border-bottom:1px solid var(--bd);background:var(--card)}
+h1{margin:0;font-size:18px}
+header p{margin:2px 0 0;color:var(--mut);font-size:13px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.nav button{padding:8px 12px}
+.app-view.hidden{display:none}
+main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;padding:14px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
+canvas{width:100%;height:auto;display:block;border-radius:8px;border:1px solid var(--bd);background:#fff}
+.scene-wrap{position:relative;width:100%;aspect-ratio:640/420;overflow:hidden;border-radius:8px}
+.scene-wrap>canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:8px}
+#c3d{display:none;touch-action:none;cursor:grab}
+#c3d:active{cursor:grabbing}
+.scene-wrap.three-ready #c{display:none}
+.scene-wrap.three-ready #c3d{display:block}
+.scene-warning{margin:6px 0 0;color:#b45309;font-size:13px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0;align-items:center}
+button,select{font:inherit;padding:11px 16px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg);cursor:pointer}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+textarea{width:100%;height:230px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;background:var(--code);color:var(--codefg);border:1px solid var(--bd);border-radius:8px;padding:10px;resize:vertical;tab-size:2}
+.st{font:13px ui-monospace,Menlo,monospace;color:var(--mut)}
+input[type=range]{width:110px;vertical-align:middle}.err{color:#e5484d;font-size:13px;min-height:20px;margin-top:6px}
+code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:13px}
+ul{margin:6px 0 0;padding-left:18px;color:var(--mut);font-size:13px}
+h2,h3{font-size:14px;margin:0 0 6px}
+.learn-shell{max-width:1100px;margin:16px auto;padding:0 14px 18px}
+.course-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr);gap:20px;align-items:center;padding:24px;background:linear-gradient(120deg,#173b82,#2563eb 55%,#7c3aed);color:#fff;border:0;overflow:hidden}
+.course-hero p{max-width:620px;color:#e0eaff}
+.course-hero h2{font-size:clamp(24px,4vw,36px);line-height:1.15;margin-bottom:10px}
+.course-hero .course-tag{display:inline-flex;padding:5px 10px;border:1px solid #ffffff70;border-radius:999px;color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.course-art{width:100%;max-height:220px}
+.course-path{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.course-path span{padding:7px 11px;border-radius:9px;background:#ffffff20;color:#fff;font-size:13px;font-weight:650}
+.lesson-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:18px}
+.lesson{position:relative;min-height:230px;padding:18px;border-top:4px solid var(--lesson-color,#2563eb);overflow:hidden}
+.lesson:after{content:"";position:absolute;width:110px;height:110px;right:-42px;top:-48px;border-radius:50%;background:var(--lesson-tint,#eff6ff);pointer-events:none}
+.lesson h3{position:relative;z-index:1;display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:17px}
+.lesson h3:before{content:attr(data-icon);display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:13px;background:var(--lesson-tint,#eff6ff);font-size:22px}
+.lesson-art{display:block;width:100%;height:112px;margin:0 0 14px;border-radius:12px;background:linear-gradient(135deg,var(--lesson-tint),var(--card));}
+.lesson-art use{color:var(--lesson-color)}
+.svg-sprite{position:absolute;width:0;height:0;overflow:hidden}
+.lesson:nth-child(4n+1){--lesson-color:#2563eb;--lesson-tint:#dbeafe}
+.lesson:nth-child(4n+2){--lesson-color:#7c3aed;--lesson-tint:#ede9fe}
+.lesson:nth-child(4n+3){--lesson-color:#0891b2;--lesson-tint:#cffafe}
+.lesson:nth-child(4n){--lesson-color:#ea580c;--lesson-tint:#ffedd5}
+.lesson .level{display:inline-block;margin-bottom:8px;padding:3px 8px;border-radius:999px;background:var(--lesson-tint);color:var(--lesson-color);font-size:11px;font-weight:750;letter-spacing:.04em;text-transform:uppercase}
+.lesson p,.lesson li{color:var(--mut)}
+.lesson pre{margin:10px 0;background:#101827;color:#e2e8f0;padding:12px;border-radius:10px;overflow:auto;font:13px/1.55 ui-monospace,Menlo,Consolas,monospace}
+.lesson ul{font-size:14px}
+.lesson details{position:relative;z-index:1;margin-top:14px;border-top:1px solid var(--bd);padding-top:10px}
+.lesson summary{color:var(--lesson-color);font-weight:700;cursor:pointer}
+.lesson details h4{margin:12px 0 4px;font-size:14px}
+.lesson details p{margin:5px 0;font-size:14px}
+.lesson details .try-it{padding:9px 11px;border-radius:8px;background:var(--lesson-tint);color:var(--fg)}
+.lesson-launch{position:relative;z-index:1;width:100%;margin-top:14px;background:var(--lesson-tint);color:var(--lesson-color);border-color:var(--lesson-color);font-weight:700}
+.lesson-launch:hover{filter:brightness(.96)}
+.project-shell{max-width:1100px;margin:16px auto;padding:0 14px 24px}
+.project-hero{overflow:hidden;padding:24px;background:linear-gradient(120deg,#064e3b,#059669 58%,#0e7490);color:#fff;border:0}
+.project-hero h2{font-size:clamp(24px,4vw,34px);line-height:1.15;margin:8px 0}
+.project-hero p{color:#d1fae5;max-width:760px}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:14px}
+.project-card{padding:18px}
+.project-card h3{font-size:17px;margin-bottom:8px}
+.project-card p,.project-card li{color:var(--mut)}
+.project-card pre{background:#101827;color:#e2e8f0;padding:14px;border-radius:10px;overflow:auto;font:13px/1.55 ui-monospace,Menlo,Consolas,monospace}
+.project-wide{grid-column:1/-1}
+.project-table-wrap{overflow-x:auto}
+.project-table{width:100%;border-collapse:collapse;min-width:560px}
+.project-table th,.project-table td{padding:10px;text-align:left;border-bottom:1px solid var(--bd);vertical-align:top}
+.project-table th{color:var(--fg);background:var(--bg)}
+.project-note{padding:12px 14px;border-left:4px solid #d97706;background:#fffbeb;border-radius:8px;color:#713f12}
+.project-checklist{counter-reset:build}
+.project-checklist li{margin:8px 0}
+.build-guide{margin-top:18px}
+.build-guide-intro{max-width:820px}
+.build-guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0}
+.project-card.build-guide-step{overflow:hidden;padding:0}
+.build-guide-step figure{margin:0}
+.build-guide-step figure>img{display:block;width:100%;max-width:100%;height:190px;object-fit:contain;background:#f1f5f9}
+.build-guide-step h4{margin:14px 16px 6px;font-size:16px}
+.build-guide-step p{margin:8px 16px 16px}
+.build-guide-images{display:grid;grid-template-columns:1fr;gap:8px}
+.build-guide-images img{display:block;width:100%;height:190px;object-fit:contain;background:#f1f5f9}
+.build-guide-images.paired{grid-template-columns:1fr 1fr}
+.build-guide-images.paired img{height:150px}
+.build-guide-step figcaption{padding:8px 12px;background:var(--bg);font-size:11px;line-height:1.45;color:var(--mut)}
+.build-guide-step figcaption a{color:var(--ac)}
+.build-guide-note{padding:12px 14px;border-radius:10px;background:color-mix(in srgb,#0e7490 9%,var(--card));color:var(--fg)}
+.gift-message{margin-top:12px;padding:14px 18px;border-radius:12px;background:linear-gradient(100deg,#fef3c7,#fce7f3);color:#9d174d;text-align:center;font-size:clamp(20px,4vw,28px);font-weight:800}
+.gift-dialog{width:min(92vw,460px);max-height:90vh;overflow:auto;padding:28px;border:0;border-radius:20px;background:var(--card);color:var(--fg);text-align:center;box-shadow:0 24px 80px #0f172a66}
+.gift-dialog::backdrop{background:#0f172acc;backdrop-filter:blur(4px)}
+.gift-dialog h2{font-size:26px;color:#be185d;margin:0 0 8px}
+.gift-dialog p{color:var(--mut);margin:8px 0}
+.gift-video{display:block;width:100%;aspect-ratio:16/9;margin:16px auto 10px;border:0;border-radius:12px;background:#0f172a}
+.gift-qr{display:block;width:min(68vw,280px);height:auto;margin:16px auto;padding:10px;border:1px solid var(--bd);border-radius:14px;background:#fff}
+.gift-qr-option{margin-top:16px!important;font-size:13px}
+.gift-qr-option img{width:min(38vw,150px);margin:8px auto 0}
+.gift-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.gift-play{display:inline-block;padding:12px 18px;border-radius:9px;background:#db2777;color:#fff;text-decoration:none;font-weight:750}
+.gift-close{padding:12px 18px}
+[hidden]{display:none!important}
+@media(max-width:640px){.course-hero{grid-template-columns:1fr;padding:20px}.course-art{max-height:150px}.lesson-grid{grid-template-columns:1fr}}
+
+/* Polished responsive application shell */
+:root{--bg:#f3f6fc;--card:#fff;--fg:#172033;--mut:#66758c;--bd:#e2e8f2;--ac:#5b5cf0;--code:#111827;--codefg:#e6edf7;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1020;--card:#121a2b;--fg:#eef2ff;--mut:#9aa9c0;--bd:#25314a;--ac:#8b8cfb;--code:#090e1a;--codefg:#e6edf7;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--card:#121a2b;--fg:#eef2ff;--mut:#9aa9c0;--bd:#25314a;--ac:#8b8cfb;--code:#090e1a;--codefg:#e6edf7;color-scheme:dark}
+body{min-height:100vh;background:radial-gradient(ellipse at 18% 0%,#e9eaff 0,transparent 34%),var(--bg);font-size:15px;line-height:1.6}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) body{background:radial-gradient(ellipse at 18% 0%,#1c2141 0,transparent 34%),var(--bg)}}
+:root[data-theme="dark"] body{background:radial-gradient(ellipse at 18% 0%,#1c2141 0,transparent 34%),var(--bg)}
+header{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:30px;padding:15px max(22px,calc((100vw - 1320px)/2));border-bottom:1px solid color-mix(in srgb,var(--bd) 80%,transparent);background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(18px)}
+header h1{grid-column:1;grid-row:1;font-size:20px;font-weight:800;letter-spacing:-.035em}
+header p{grid-column:1;grid-row:2;font-size:13px}
+.nav{grid-column:2;grid-row:1/span 2;margin:0;gap:6px;padding:5px;border:1px solid var(--bd);border-radius:13px;background:var(--bg)}
+.nav button{padding:9px 14px;border-color:transparent;background:transparent;color:var(--mut);font-size:13px;font-weight:700;transition:background .18s,color .18s,transform .18s}
+.nav button:hover{color:var(--fg);transform:translateY(-1px)}
+.nav button.p{background:var(--card);color:var(--ac);border-color:var(--bd);box-shadow:0 2px 8px #17203312}
+main{max-width:1320px;gap:20px;padding:24px 20px 40px}
+.card{border-color:var(--bd);border-radius:18px;padding:18px;box-shadow:0 10px 30px #18213a0a}
+#sim-view>section:first-child{padding:18px}
+#sim-view>section:nth-child(2){padding:22px}
+canvas{border:1px solid var(--bd);border-radius:14px;box-shadow:inset 0 0 0 1px #fff}
+.bar{gap:9px;margin-top:12px}
+button,select{padding:10px 15px;border-radius:10px;transition:transform .16s,box-shadow .16s,border-color .16s,background .16s}
+button:hover,select:hover{border-color:color-mix(in srgb,var(--ac) 48%,var(--bd));box-shadow:0 5px 14px #18213a12;transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+button:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid color-mix(in srgb,var(--ac) 50%,transparent);outline-offset:2px}
+button.p{background:linear-gradient(135deg,var(--ac),#8173f5);border-color:transparent;box-shadow:0 6px 16px color-mix(in srgb,var(--ac) 25%,transparent);font-weight:750}
+button.p:hover{box-shadow:0 9px 20px color-mix(in srgb,var(--ac) 32%,transparent)}
+#sim-view h2{font-size:15px;font-weight:750;letter-spacing:-.01em;margin:0 0 10px}
+#sim-view textarea{height:clamp(260px,40vh,460px);border-radius:13px;padding:15px;line-height:1.6;box-shadow:inset 0 2px 8px #0002}
+.st{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+#st,#tm{padding:6px 10px;border:1px solid var(--bd);border-radius:999px;background:var(--bg);font-size:12px}
+#sensor-hint,#gift-hint{margin:11px 3px;color:var(--mut);font:12px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+#gift-hint{padding:10px 13px;border:1px solid #fbcfe8;border-radius:11px;background:#fdf2f8;color:#9d174d}
+.err{border-radius:8px}
+input[type=range]{accent-color:var(--ac)}
+.learn-shell,.project-shell{max-width:1200px;margin:28px auto;padding:0 20px 40px}
+.course-hero,.project-hero{position:relative;min-height:250px;padding:clamp(24px,5vw,48px);border-radius:24px;box-shadow:0 20px 55px #342c8c24}
+.course-hero{background:linear-gradient(120deg,#25236e 0%,#5046cf 52%,#a353dc 100%)}
+.course-hero:after,.project-hero:after{content:"";position:absolute;right:-65px;top:-115px;width:320px;height:320px;border:1px solid #ffffff28;border-radius:50%;box-shadow:0 0 0 35px #ffffff0d,0 0 0 75px #ffffff09;pointer-events:none}
+.course-hero>div,.course-art{position:relative;z-index:1}
+.course-hero h2,.project-hero h2{letter-spacing:-.04em}
+.course-hero p,.project-hero p{line-height:1.75}
+.lesson-grid,.project-grid{gap:18px;margin-top:20px}
+.lesson,.project-card{border-radius:18px;padding:20px;box-shadow:0 8px 24px #18213a0a;transition:transform .2s,box-shadow .2s}
+.lesson:hover,.project-card:hover{transform:translateY(-3px);box-shadow:0 16px 36px #18213a13}
+.lesson{border-top-width:4px}
+.lesson-art{height:130px;border-radius:14px}
+.lesson pre,.project-card pre{border:1px solid #344159;box-shadow:inset 0 1px 0 #ffffff0a}
+.lesson-launch{border-radius:11px}
+.lesson details{padding-top:14px}
+.lesson summary{padding:4px 0}
+.project-hero{background:linear-gradient(120deg,#064e3b 0%,#0b8a78 55%,#2563a7 100%);box-shadow:0 20px 55px #08745c20}
+.project-card h3{letter-spacing:-.02em}
+.project-table{border-collapse:separate;border-spacing:0}
+.project-table th:first-child{border-radius:10px 0 0 0}
+.project-table th:last-child{border-radius:0 10px 0 0}
+.project-table td,.project-table th{padding:13px 14px}
+.project-table tbody tr:hover{background:color-mix(in srgb,var(--ac) 5%,var(--card))}
+.project-note{background:#fffbeb}
+.gift-dialog{border:1px solid var(--bd)}
+@media(max-width:820px){
+  header{column-gap:14px}
+  main{padding:18px 16px 30px}
+  #sim-view{gap:14px}
+}
+@media(max-width:600px){
+  header{position:relative;grid-template-columns:1fr;padding:14px 16px;gap:12px}
+  header h1{grid-column:1;grid-row:1}
+  header p{grid-column:1;grid-row:2}
+  .nav{grid-column:1;grid-row:3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:3px}
+  .nav button{padding:9px 5px;font-size:12px}
+  main{padding:14px 12px 26px;gap:14px}
+  .card,#sim-view>section:first-child,#sim-view>section:nth-child(2){padding:14px;border-radius:15px}
+  .bar{gap:7px}
+  button,select{padding:10px 12px}
+  #sim-view textarea{height:280px}
+  .learn-shell,.project-shell{margin:18px auto;padding:0 12px 26px}
+  .course-hero,.project-hero{min-height:0;padding:24px 20px;border-radius:19px}
+  .course-art{max-height:140px}
+  .lesson,.project-card{padding:16px;border-radius:15px}
+  .lesson-art{height:112px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+.lesson>p,.lesson>ul,.lesson>pre,.lesson>details{display:none}
+.lesson>.lesson-summary{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3;min-height:4.8em;color:var(--mut)}
+.lesson-launch{margin-top:10px}
+.session-shell{max-width:1100px;margin:28px auto;padding:0 20px 40px}
+.session-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+.session-back{font-weight:700}
+.session-count{color:var(--mut);font-size:14px;font-weight:750}
+.session-progress{height:9px;margin:0 0 20px;overflow:hidden;border-radius:999px;background:var(--bd)}
+.session-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#21b6a8,#5b5cf0);transition:width .2s}
+.session-hero{padding:clamp(18px,4vw,34px)}
+.session-hero-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,.8fr);gap:22px;align-items:center}
+.session-kicker{display:inline-block;margin-bottom:8px;padding:5px 10px;border-radius:999px;background:#e0f2fe;color:#075985;font-size:12px;font-weight:800;letter-spacing:.035em;text-transform:uppercase}
+.session-title{margin:0 0 10px;font-size:clamp(27px,5vw,42px);line-height:1.12;letter-spacing:-.04em}
+.session-intro{max-width:630px;margin:0;color:var(--mut);font-size:17px;line-height:1.75}
+.session-visuals{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.session-visuals figure{min-width:0;margin:0;overflow:hidden;border:1px solid var(--bd);border-radius:16px;background:var(--bg)}
+.session-photo{display:block;width:100%;height:190px;object-fit:cover}
+.session-diagram{display:block;width:100%;height:190px;padding:18px;background:linear-gradient(145deg,#eef2ff,#ecfeff)}
+.session-visuals figcaption{padding:9px 11px;color:var(--mut);font-size:12px}
+.session-visuals figcaption a{color:var(--ac);font-weight:700}
+.session-conversation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+.session-teaching-card{padding:20px;border-radius:17px}
+.session-teaching-card h3{margin:0 0 8px;font-size:17px}
+.session-teaching-card p{margin:0;color:var(--mut);line-height:1.7}
+.session-teaching-card.idea{border-top:4px solid #5b5cf0}
+.session-teaching-card.talk{border-top:4px solid #0ea5a4}
+.session-teaching-card.challenge{border-top:4px solid #f59e0b}
+.session-code{margin-top:16px;padding:18px 20px;border-radius:17px}
+.session-code summary{cursor:pointer;color:var(--ac);font-weight:750}
+.session-code h4{margin:14px 0 4px}
+.session-code p,.session-code li{color:var(--mut)}
+.session-code pre{overflow:auto;padding:13px;border-radius:10px;background:#101827;color:#e2e8f0;font:13px/1.55 ui-monospace,Menlo,Consolas,monospace}
+.session-check{margin-top:16px;padding:18px 20px;border-radius:17px;background:linear-gradient(120deg,#fff7ed,#fef3c7);color:#7c2d12}
+.session-check h3{margin:0 0 5px;font-size:17px}
+.session-check p{margin:0}
+.session-footer{display:flex;justify-content:space-between;gap:12px;margin-top:18px}
+.session-footer button{min-width:150px;font-weight:750}
+.session-footer .p{color:#fff}
+.session-open-sim{margin-top:14px!important}
+.image-unavailable{display:none!important}
+.session-deep{margin-top:16px;padding:clamp(18px,3vw,26px);border-radius:18px}
+.session-deep>h3{margin:0 0 10px;font-size:clamp(20px,3vw,25px)}
+.session-deep>p{margin:0;color:var(--mut);font-size:16px;line-height:1.85}
+.session-example{margin-top:16px;padding:16px 18px;border-left:4px solid #0ea5a4;border-radius:12px;background:color-mix(in srgb,#ccfbf1 45%,var(--card))}
+.session-example h4,.session-walkthrough h4{margin:0 0 6px;font-size:16px}
+.session-example p{margin:0;color:var(--fg);line-height:1.8}
+.session-code-sample{margin:16px 0 0}
+.session-code-sample h4{margin:0 0 8px;font-size:16px}
+.session-code-sample pre{margin:0;overflow:auto;padding:16px;border-radius:12px;background:#101827;color:#e2e8f0;font:14px/1.7 ui-monospace,Menlo,Consolas,monospace;direction:ltr;text-align:left}
+.session-walkthrough{margin-top:16px}
+.session-walkthrough ol{margin:8px 0 0;padding-inline-start:24px}
+.session-walkthrough li{margin:8px 0;color:var(--mut);line-height:1.7}
+.session-walkthrough li strong{color:var(--fg)}
+html[dir="rtl"] .session-example{border-left:0;border-right:4px solid #0ea5a4}
+html[dir="rtl"] .session-code-sample pre{direction:ltr;text-align:left}
+@media(max-width:760px){.session-hero-head{grid-template-columns:1fr}.session-conversation{grid-template-columns:1fr}.session-visuals{grid-template-columns:1fr 1fr}.session-photo,.session-diagram{height:150px}}
+@media(max-width:520px){.session-shell{margin:18px auto;padding:0 12px 26px}.session-toolbar{align-items:flex-start}.session-visuals{grid-template-columns:1fr}.session-photo,.session-diagram{height:185px}.session-footer button{min-width:0;flex:1;padding:10px 8px}.session-title{font-size:30px}}
+html[dir="rtl"] body{text-align:right}
+html[dir="rtl"] .course-path,html[dir="rtl"] .session-toolbar{direction:rtl}
+html[dir="rtl"] .session-intro,html[dir="rtl"] .session-teaching-card p,html[dir="rtl"] .session-check p{line-height:1.9}
+html[dir="rtl"] .session-code pre,html[dir="rtl"] textarea,html[dir="rtl"] code{direction:ltr;text-align:left}
+html[dir="rtl"] .project-note{border-left:0;border-right:4px solid #d97706}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="app-title">🤖 Robot Simulator</h1>
+  <p id="app-tagline">Write code, press Run, and watch your robot sense, think and act.</p>
+  <div class="nav">
+    <button id="show-sim" class="p">Simulator</button>
+    <button id="show-learn">Learn Robotics</button>
+    <button id="show-project">Real-World Project</button>
+    <button id="language-toggle" type="button" aria-label="Switch language to Arabic">العربية</button>
+  </div>
+</header>
+<main id="sim-view" class="app-view">
+  <section class="card">
+    <div id="scene-wrap" class="scene-wrap">
+      <canvas id="c" width="640" height="420"></canvas>
+      <canvas id="c3d" aria-label="3D robot arena. Drag to rotate the camera and scroll to zoom." aria-describedby="sensor-hint" tabindex="0"></canvas>
+    </div>
+    <p class="st" id="sensor-hint">Drag the 3D scene to rotate the camera; scroll to zoom. The red line shows the distance sensor, not a barrier. If an obstacle is close, the robot must reverse and turn to move away.</p>
+    <p class="scene-warning" id="scene-warning" hidden data-i18n-en="3D graphics are unavailable in this browser, so the simulator is showing its 2D view." data-i18n-ar="الرسومات ثلاثية الأبعاد غير متاحة في هذا المتصفح، لذلك يعرض المحاكي مشهدًا ثنائي الأبعاد.">3D graphics are unavailable in this browser, so the simulator is showing its 2D view.</p>
+    <p class="st" id="gift-hint" hidden>Gift mission: press Run and the robot will follow a safe route around obstacles. Press Reset to try again.</p>
+    <div class="bar">
+      <button class="p" id="run">▶ Run</button>
+      <button id="reset">↺ Reset</button>
+      <button id="forward">↑ Forward</button>
+      <button id="backward">↓ Back</button>
+      <button id="turn-left">← Left</button>
+      <button id="turn-right">Right →</button>
+      <select id="mode"><option value="obstacle" id="mode-obstacle">Obstacle arena</option><option value="line" id="mode-line">Line track</option><option value="gift" id="mode-gift">🎁 Gift mission</option></select>
+      <span class="st" id="st"></span></div><div class="bar"><label class="st" id="speed-label">Speed <input type="range" id="spd" min="0.5" max="2" step="0.1" value="1"></label><label class="st" id="noise-label">Sensor noise <input type="range" id="noi" min="0" max="10" step="1" value="0"></label><label class="st" id="slippery-label">Slippery floor <input type="range" id="slp" min="0" max="0.8" step="0.05" value="0"></label></div><div class="bar"><button id="rnd">🎲 Random obstacles</button><label class="st"><input type="checkbox" id="trl" checked><span id="trail-label"> Trail</span></label><span class="st" id="tm"></span>
+    </div>
+  </section>
+  <section class="card">
+    <h2 id="program-heading">Your program (runs every tick, like Arduino <code>loop()</code>)</h2>
+    <textarea id="code" spellcheck="false"></textarea>
+    <div class="bar"><button id="rc">Restore example code</button></div><div class="err" id="err"></div>
+    <h2 id="commands-heading" style="margin-top:8px">Robot commands</h2>
+    <ul id="command-list">
+      <li id="command-drive"><code>robot.drive(left, right)</code> motor power from -1 to 1</li>
+      <li id="command-distance"><code>robot.distance()</code> cm to the nearest obstacle ahead</li>
+      <li id="command-line"><code>robot.lineLeft()</code> / <code>robot.lineRight()</code> true when over black</li>
+      <li id="command-state"><code>state</code> an object to remember values between ticks</li>
+    </ul>
+  </section>
+</main>
+<dialog id="gift-message" class="gift-dialog" aria-labelledby="gift-title">
+  <h2 id="gift-title">🎉You catch my drift 🎁</h2>
+  <p>Your surprise is ready! Press Play to watch it here 🎶</p>
+  <iframe class="gift-video" src="https://www.youtube-nocookie.com/embed/Gl1hE4oF48k?list=RDGl1hE4oF48k&amp;controls=1&amp;rel=0" title="Sawsen's surprise video" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <details class="gift-qr-option">
+    <summary>Want to scan the video QR code instead?</summary>
+    <img class="gift-qr" src="/sawsen-video-qr.png" alt="QR code that opens surprise YouTube video">
+  </details>
+  <div class="gift-actions">
+    <a class="gift-play" href="https://www.youtube.com/watch?v=Gl1hE4oF48k&amp;list=RDGl1hE4oF48k&amp;start_radio=1" target="_blank" rel="noopener noreferrer">Open in YouTube ↗</a>
+    <button id="gift-close" class="gift-close" type="button">Close</button>
+  </div>
+</dialog>
+<section id="learn-view" class="app-view hidden learn-shell">
+  <svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="art-robot" viewBox="0 0 240 100">
+      <path d="M31 76h178" fill="none" stroke="#93c5fd" stroke-width="4" stroke-linecap="round" stroke-dasharray="3 10"/>
+      <rect x="91" y="28" width="58" height="48" rx="14" fill="#2563eb"/><rect x="99" y="36" width="42" height="26" rx="9" fill="#172554"/>
+      <circle cx="111" cy="48" r="4" fill="#67e8f9"/><circle cx="129" cy="48" r="4" fill="#67e8f9"/>
+      <path d="M111 57q9 7 18 0M120 28V17" fill="none" stroke="#172554" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="120" cy="14" r="5" fill="#f59e0b"/><circle cx="90" cy="53" r="5" fill="#f59e0b"/><circle cx="150" cy="53" r="5" fill="#f59e0b"/>
+      <circle cx="100" cy="81" r="8" fill="#334155"/><circle cx="140" cy="81" r="8" fill="#334155"/>
+    </symbol>
+    <symbol id="art-loop" viewBox="0 0 240 100">
+      <path d="M80 28a34 34 0 0 1 59 5" fill="none" stroke="#7c3aed" stroke-width="7" stroke-linecap="round"/>
+      <path d="m137 21 5 15-16-2" fill="#7c3aed"/><path d="M160 70a34 34 0 0 1-59-5" fill="none" stroke="#0891b2" stroke-width="7" stroke-linecap="round"/>
+      <path d="m103 77-5-15 16 2" fill="#0891b2"/><circle cx="120" cy="49" r="17" fill="#fff" stroke="#c4b5fd" stroke-width="3"/>
+      <path d="m113 42 15 7-15 8z" fill="#2563eb"/>
+    </symbol>
+    <symbol id="art-sensors" viewBox="0 0 240 100">
+      <path d="M64 50q56-56 112 0-56 56-112 0" fill="#fff" stroke="#0891b2" stroke-width="5"/>
+      <circle cx="120" cy="50" r="22" fill="#67e8f9"/><circle cx="120" cy="50" r="10" fill="#164e63"/>
+      <path d="M36 24 22 12m14 64L22 88m182-64 14-12m-14 64 14 12" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="art-motors" viewBox="0 0 240 100">
+      <rect x="54" y="31" width="44" height="38" rx="8" fill="#7c3aed"/><rect x="142" y="31" width="44" height="38" rx="8" fill="#2563eb"/>
+      <circle cx="76" cy="50" r="12" fill="#ede9fe"/><circle cx="164" cy="50" r="12" fill="#dbeafe"/>
+      <path d="M98 50h44" stroke="#334155" stroke-width="5"/><path d="m124 41 12 9-12 9" fill="none" stroke="#334155" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="76" cy="50" r="4" fill="#7c3aed"/><circle cx="164" cy="50" r="4" fill="#2563eb"/>
+      <path d="M64 27V17m24 10V17m64 10V17m24 10V17" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="art-forward" viewBox="0 0 240 100">
+      <path d="M42 68h152" stroke="#2563eb" stroke-width="7" stroke-linecap="round"/>
+      <path d="m174 47 24 21-24 21" fill="none" stroke="#2563eb" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="78" y="30" width="46" height="40" rx="12" fill="#60a5fa"/><circle cx="91" cy="76" r="7" fill="#334155"/><circle cx="111" cy="76" r="7" fill="#334155"/>
+      <path d="M90 43h22m-11-11v22" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="art-obstacle" viewBox="0 0 240 100">
+      <rect x="177" y="28" width="28" height="49" rx="5" fill="#94a3b8"/><path d="M52 52h62" stroke="#2563eb" stroke-width="5" stroke-dasharray="6 8"/>
+      <rect x="70" y="38" width="38" height="30" rx="8" fill="#2563eb"/><circle cx="78" cy="72" r="6" fill="#334155"/><circle cx="100" cy="72" r="6" fill="#334155"/>
+      <path d="M119 42q18 10 0 20m9-29q30 19 0 38" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+      <path d="m144 37 18 30m0-30-18 30" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="art-conditions" viewBox="0 0 240 100">
+      <path d="M120 19 158 39 120 59 82 39z" fill="#c4b5fd" stroke="#7c3aed" stroke-width="3"/>
+      <text x="120" y="44" text-anchor="middle" font-size="12" fill="#4c1d95" font-family="sans-serif">IF?</text>
+      <path d="M100 51 70 73m70-22 30 22" fill="none" stroke="#7c3aed" stroke-width="4"/>
+      <rect x="42" y="70" width="56" height="20" rx="8" fill="#dbeafe"/><rect x="142" y="70" width="56" height="20" rx="8" fill="#cffafe"/>
+      <text x="70" y="84" text-anchor="middle" font-size="10" fill="#1e3a8a" font-family="sans-serif">TURN</text><text x="170" y="84" text-anchor="middle" font-size="10" fill="#155e75" font-family="sans-serif">GO</text>
+    </symbol>
+    <symbol id="art-line" viewBox="0 0 240 100">
+      <path d="M30 76c35-70 65 40 100-20s55 10 80-25" fill="none" stroke="#111827" stroke-width="9" stroke-linecap="round"/>
+      <rect x="94" y="25" width="44" height="29" rx="8" fill="#0891b2"/><circle cx="103" cy="59" r="5" fill="#ef4444"/><circle cx="129" cy="59" r="5" fill="#22c55e"/>
+      <path d="M103 66v12m26-12v12" stroke="#64748b" stroke-width="3" stroke-dasharray="3 3"/>
+    </symbol>
+    <symbol id="art-memory" viewBox="0 0 240 100">
+      <path d="M74 29h77a16 16 0 0 1 16 16v29H74a16 16 0 0 1 0-45z" fill="#ede9fe" stroke="#7c3aed" stroke-width="4"/>
+      <path d="M90 43h54m-54 13h37" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/>
+      <path d="M170 50h25m-10-10 10 10-10 10" fill="none" stroke="#0891b2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="61" cy="50" r="8" fill="#f59e0b"/>
+    </symbol>
+    <symbol id="art-behaviors" viewBox="0 0 240 100">
+      <circle cx="120" cy="50" r="18" fill="#2563eb"/><text x="120" y="55" text-anchor="middle" font-size="12" fill="#fff" font-family="sans-serif">BOT</text>
+      <circle cx="59" cy="29" r="15" fill="#fee2e2"/><path d="M52 29h14m-7-7v14" stroke="#ef4444" stroke-width="3"/>
+      <circle cx="181" cy="29" r="15" fill="#dbeafe"/><path d="M174 33V25h14v8m-10-12h6" fill="none" stroke="#2563eb" stroke-width="3"/>
+      <circle cx="59" cy="75" r="15" fill="#dcfce7"/><path d="m52 75 5 5 10-12" fill="none" stroke="#16a34a" stroke-width="3"/>
+      <circle cx="181" cy="75" r="15" fill="#ffedd5"/><path d="M174 75h14m-7-7v14" stroke="#ea580c" stroke-width="3"/>
+      <path d="m75 35 28 10m34 0 28-10M75 68l28-12m34 0 28 12" stroke="#64748b" stroke-width="3"/>
+    </symbol>
+    <symbol id="art-debug" viewBox="0 0 240 100">
+      <path d="M44 76h152" stroke="#94a3b8" stroke-width="3"/>
+      <path d="M60 68V50h28v18m12 0V35h28v33m12 0V22h28v46" fill="#ffedd5" stroke="#ea580c" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="166" cy="33" r="18" fill="#fff" stroke="#2563eb" stroke-width="5"/><path d="m179 46 13 13" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+      <path d="M73 58h2m24-14h2m24-3h2" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="art-autonomy" viewBox="0 0 240 100">
+      <path d="m120 16 8 20 21 2-16 14 5 21-18-11-18 11 5-21-16-14 21-2z" fill="#fbbf24"/>
+      <path d="M54 77q22-35 44 0t44 0 44 0" fill="none" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="54" cy="77" r="6" fill="#2563eb"/><circle cx="98" cy="77" r="6" fill="#0891b2"/><circle cx="142" cy="77" r="6" fill="#16a34a"/><circle cx="186" cy="77" r="6" fill="#ea580c"/>
+    </symbol>
+  </svg>
+  <div class="card course-hero">
+    <div>
+      <span class="course-tag" id="course-tag">Robotics course · 12 kid-friendly sessions</span>
+      <h2 id="course-heading">Welcome, robot explorers!</h2>
+      <p id="course-intro">Choose a short session, talk through a big idea, and try a hands-on challenge together. Start anywhere—no robotics experience needed.</p>
+      <div class="course-path"><span id="level-beginner">🟢 Beginner</span><span id="level-intermediate">🟣 Intermediate</span><span id="level-advanced">🟠 Advanced</span></div>
+    </div>
+    <svg class="course-art" viewBox="0 0 320 220" role="img" aria-labelledby="robot-art-title">
+      <title id="robot-art-title">Illustration of a friendly learning robot sensing and moving</title>
+      <path d="M28 184h264" stroke="#ffffff70" stroke-width="4" stroke-linecap="round" stroke-dasharray="3 12"/>
+      <path d="M48 184c25-30 39-30 64 0m91 0c23-31 42-31 66 0" fill="none" stroke="#93c5fd" stroke-width="5" stroke-linecap="round"/>
+      <rect x="112" y="60" width="96" height="91" rx="24" fill="#fff"/>
+      <rect x="124" y="74" width="72" height="49" rx="16" fill="#172554"/>
+      <circle cx="145" cy="96" r="7" fill="#67e8f9"/>
+      <circle cx="175" cy="96" r="7" fill="#67e8f9"/>
+      <path d="M146 111q14 12 28 0" fill="none" stroke="#a5f3fc" stroke-width="4" stroke-linecap="round"/>
+      <path d="M160 60V43" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="160" cy="36" r="9" fill="#fbbf24"/>
+      <rect x="97" y="88" width="15" height="38" rx="7" fill="#bfdbfe"/>
+      <rect x="208" y="88" width="15" height="38" rx="7" fill="#bfdbfe"/>
+      <rect x="123" y="151" width="20" height="18" rx="7" fill="#bfdbfe"/>
+      <rect x="177" y="151" width="20" height="18" rx="7" fill="#bfdbfe"/>
+      <circle cx="79" cy="69" r="17" fill="#fbbf24"/>
+      <path d="M79 59v10l7 4" fill="none" stroke="#78350f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M224 48l6 12 13 2-10 9 2 13-11-6-11 6 2-13-10-9 13-2z" fill="#a5f3fc"/>
+      <text x="53" y="220" fill="#fff" font-size="13" font-family="system-ui">SENSE</text>
+      <text x="138" y="220" fill="#fff" font-size="13" font-family="system-ui">DECIDE</text>
+      <text x="240" y="220" fill="#fff" font-size="13" font-family="system-ui">MOVE</text>
+    </svg>
+  </div>
+
+  <div class="lesson-grid">
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Robot diagram showing sensors, controller, and wheels"><use href="#art-robot"></use></svg>
+      <span class="level">Beginner · 1</span><h3 data-icon="🤖">What is a robot?</h3>
+      <p>A robot is a machine that receives information, makes a decision, and produces an action. In this simulator, the robot sees the environment through sensors and reacts by moving its wheels.</p>
+      <ul>
+        <li><strong>Sense</strong>: read sensor values</li>
+        <li><strong>Think</strong>: decide what to do</li>
+        <li><strong>Act</strong>: move the motors</li>
+      </ul>
+      <details><summary>Detailed explanation and example</summary>
+        <h4>How it works</h4><p>A robot is a system that interacts with its surroundings. A sensor provides input, a controller runs instructions, and an actuator (such as a motor) produces output. The simulator models these parts in software.</p>
+        <h4>Example: approaching a wall</h4><p>The distance sensor reports a measurement. The program compares that number to a safe limit. The motors then keep moving or turn. The robot only follows the rules we provide; it does not understand the wall like a person.</p>
+        <p class="try-it"><strong>Try it:</strong> In Simulator, select Obstacle arena and run the example. Watch the sensor reading and robot movement change together.</p>
+      </details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Circular arrows representing a repeating robot control loop"><use href="#art-loop"></use></svg>
+      <span class="level">Beginner · 2</span><h3 data-icon="🔁">The basic robot loop</h3>
+      <p>Robots usually repeat the same cycle many times per second. This is called a control loop. Each cycle: measure, decide, move.</p>
+      <pre>const distance = robot.distance();
+if (state.escapeTicks &gt; 0) {
+  state.escapeTicks--;
+  if (state.escapeTicks &gt; 24) {
+    robot.drive(-0.55, -0.55);
+  } else {
+    robot.drive(-0.55, 0.55);
+  }
+} else if (distance &lt; 22) {
+  state.escapeTicks = 42;
+  robot.drive(-0.55, -0.55);
+} else {
+  robot.drive(0.7, 0.7);
+}</pre>
+      <p>Every tick is a new decision. When an obstacle is close, the robot needs several ticks to back away and turn before it can continue.</p>
+<details><summary>Detailed explanation and example</summary>
+  <h4>One cycle at a time</h4><p>Each cycle reads current sensor values, evaluates the condition, and sets motor power. The next cycle repeats with new values. This is feedback: an action changes the situation that will be measured next.</p>
+  <h4>Walk through the decision</h4><p>If the measured distance is 12, then <code>12 &lt; 15</code> is true, so the first drive command runs. If the distance is 25, the condition is false and the <code>else</code> command runs.</p>
+  <p class="try-it"><strong>Try it:</strong> Change the threshold from 15 to 30, run the code, and observe when the robot starts turning.</p>
+</details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Sensor eye detecting the environment"><use href="#art-sensors"></use></svg>
+      <span class="level">Beginner · 3</span><h3 data-icon="👁️">Sensors: the robot's eyes</h3>
+      <p>Sensors are inputs. They tell the robot what is happening around it. In this simulator, the robot can detect distance and black lines.</p>
+      <ul>
+        <li><code>robot.distance()</code> returns the distance to the nearest obstacle.</li>
+        <li><code>robot.lineLeft()</code> checks the left sensor.</li>
+        <li><code>robot.lineRight()</code> checks the right sensor.</li>
+      </ul>
+      <p>Think of sensors as the robot's eyes and touch.</p>
+      <details><summary>Detailed explanation and example</summary>
+        <h4>Sensor values are measurements</h4><p><code>robot.distance()</code> returns a number in centimeters for the nearest obstacle in front, up to the simulator's sensing range. The line sensors return Boolean values: <code>true</code> means that sensor is over the dark track; <code>false</code> means it is not. The line sensors are useful in Line track mode.</p>
+        <h4>Example: store a reading</h4><pre>const ahead = robot.distance();
+if (ahead &lt; 25) {
+  robot.drive(0, 0);
+}</pre>
+        <p class="try-it"><strong>Try it:</strong> Select Line track and read the L/R status above the canvas. Move the robot and compare those readings with the colored sensor dots.</p>
+      </details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Two wheels connected to motor power"><use href="#art-motors"></use></svg>
+      <span class="level">Beginner · 4</span><h3 data-icon="⚙️">Motors: the robot's muscles</h3>
+      <p>Motors move the robot. We control them with left and right wheel power. The values are between -1 and 1.</p>
+      <pre>robot.drive(0.8, 0.8);   // forward
+robot.drive(-0.8, -0.8); // backward
+robot.drive(0.8, 0.1);   // turn right
+robot.drive(0.1, 0.8);   // turn left</pre>
+      <p>Positive values move forward. Negative values reverse direction. The difference between the two values creates rotation.</p>
+      <details><summary>Detailed explanation and example</summary>
+        <h4>Why two wheel values?</h4><p>This simulator uses a two-wheel drive model. Equal wheel speeds move mostly straight. Different speeds curve the robot. Opposite speeds make it rotate around its center. A value near zero slows one wheel while the other keeps moving.</p>
+        <h4>Example: gentle curve</h4><pre>robot.drive(0.8, 0.4);</pre><p>The left wheel is faster than the right, so the robot curves right. Exact turning behavior also depends on speed and how long the command is applied.</p>
+        <p class="try-it"><strong>Try it:</strong> Compare <code>drive(0.6, 0.6)</code>, <code>drive(0.8, 0.3)</code>, and <code>drive(-0.5, 0.5)</code>.</p>
+      </details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Robot moving forward along an arrow"><use href="#art-forward"></use></svg>
+      <span class="level">Beginner · 5</span><h3 data-icon="⬆️">Moving forward</h3>
+      <p>The simplest robot program is to keep both wheels moving forward.</p>
+      <pre>robot.drive(0.7, 0.7);</pre>
+      <p>This is the base of many autonomous robot behaviors. A robot without motion is just an object.</p>
+      <details><summary>Detailed explanation and example</summary>
+        <h4>Command values</h4><p>The first number controls the left wheel and the second controls the right. Both are positive and equal, so both wheels push forward at the same power. Values closer to 1 are faster; values closer to 0 are slower.</p>
+        <h4>Example: stop and go</h4><pre>robot.drive(0, 0);     // stop both wheels
+robot.drive(0.3, 0.3); // slow forward
+robot.drive(1, 1);     // faster forward</pre><p>Since the program runs repeatedly, a drive command is continuously refreshed while it remains in the program.</p>
+        <p class="try-it"><strong>Try it:</strong> Run the simple forward command, then change both values to 0.3 and compare the motion.</p>
+      </details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Robot detecting and turning away from an obstacle"><use href="#art-obstacle"></use></svg>
+      <span class="level">Beginner · 6</span><h3 data-icon="🛡️">Obstacle avoidance</h3>
+      <p>An obstacle-avoidance robot checks whether there is something too close ahead. If yes, turn; otherwise, keep going.</p>
+      <pre>if (state.escapeTicks &gt; 0) {
+  state.escapeTicks--;
+  if (state.escapeTicks &gt; 24) {
+    robot.drive(-0.55, -0.55); // reverse
+  } else {
+    robot.drive(-0.55, 0.55);  // then turn
+  }
+} else if (robot.distance() &lt; 22) {
+  state.escapeTicks = 42;
+  robot.drive(-0.55, -0.55);
+} else {
+  robot.drive(0.7, 0.7);
+}</pre>
+      <p>This teaches a key robotics idea: decisions depend on sensor input. The robot reverses first so it has room to turn instead of spinning against an obstacle.</p>
+<details><summary>Detailed explanation and example</summary>
+  <h4>Why reversing matters</h4><p>If a robot is already close to a wall, spinning in place can leave its body pressed against the wall. First reverse to create clearance; then turn; only then drive forward again. The red sensor ray reports what is ahead, while collision physics correctly prevents the robot body from passing through an obstacle.</p>
+  <h4>Recovery sequence</h4><pre>if (state.escapeTicks &gt; 0) {
+  state.escapeTicks--;
+  if (state.escapeTicks &gt; 24) {
+    robot.drive(-0.55, -0.55); // reverse first
+  } else {
+    robot.drive(-0.55, 0.55);  // turn after backing up
+  }
+} else if (robot.distance() &lt; 22) {
+  state.escapeTicks = 42;
+  robot.drive(-0.55, -0.55);
+} else {
+  robot.drive(0.7, 0.7);
+}</pre><p>The counter keeps each maneuver active over many control-loop ticks. It also avoids trying to move forward while the sensor still sees the same obstacle.</p>
+  <p class="try-it"><strong>Try it:</strong> Load the lesson in the simulator. Watch the robot reverse, turn, and then find a clear direction. Adjust the distance threshold if it starts too late.</p>
+</details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Decision diagram showing an if condition and two actions"><use href="#art-conditions"></use></svg>
+      <span class="level">Intermediate · 7</span><h3 data-icon="🧭">If, else, and conditions</h3>
+      <p>Conditions are the core of robot intelligence. They allow the robot to react to different situations.</p>
+      <pre>if (robot.distance() &lt; 20) {
+  robot.drive(0.5, -0.5);
+} else if (robot.distance() &lt; 40) {
+  robot.drive(0.6, 0.6);
+} else {
+  robot.drive(0.9, 0.9);
+}</pre>
+      <p>The robot is not just moving blindly. It is checking data and choosing a behavior.</p>
+<details><summary>Detailed explanation and example</summary>
+  <h4>Conditions are checked in order</h4><p>The program checks the first condition. Only when it is false does it check the next <code>else if</code>. The final <code>else</code> is the fallback. Put the most urgent or specific cases first so a broad condition does not hide them.</p>
+  <h4>Example: three distance zones</h4><ul><li>Under 20 cm: turn away.</li><li>From 20 to under 40 cm: move carefully.</li><li>40 cm or more: move faster.</li></ul><p>Notice that the middle condition does not need to say <code>distance() &gt;= 20</code>: reaching it already means the first condition was false.</p>
+  <p class="try-it"><strong>Try it:</strong> Add a new condition for a very close obstacle and make the robot stop before turning.</p>
+</details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Robot sensors tracking a winding black line"><use href="#art-line"></use></svg>
+      <span class="level">Intermediate · 8</span><h3 data-icon="〰️">Line following</h3>
+      <p>Line following makes the robot follow a track. The robot checks both line sensors and reacts to the direction of the line.</p>
+      <pre>const L = robot.lineLeft();
+const R = robot.lineRight();
+
+if (L && R) {
+  robot.drive(0.7, 0.7);
+} else if (L) {
+  robot.drive(0.1, 0.7);
+} else if (R) {
+  robot.drive(0.7, 0.1);
+} else {
+  robot.drive(0.5, -0.5);
+}</pre>
+      <p>This is one of the classic beginner robotics tasks. You learn how feedback makes a robot correct its path.</p>
+<details><summary>Detailed explanation and example</summary>
+  <h4>Interpret the two sensors</h4><p>There are four possible readings: neither sensor sees the line, only the left sees it, only the right sees it, or both see it. Each case needs a motor response. When the left sensor sees the line, slowing the left wheel relative to the right curves the robot toward the line.</p>
+  <h4>Decision table</h4><ul><li>L=true, R=true: drive straight over the line.</li><li>L=true, R=false: curve left.</li><li>L=false, R=true: curve right.</li><li>L=false, R=false: line is lost; search for it.</li></ul>
+  <p class="try-it"><strong>Try it:</strong> Switch the simulator to Line track, use the example, and adjust the smaller wheel power to make turns gentler or sharper.</p>
+</details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Memory store retaining information for the next decision"><use href="#art-memory"></use></svg>
+      <span class="level">Intermediate · 9</span><h3 data-icon="🧠">Memory with state</h3>
+      <p>Robots often need to remember things between loops. This is done with <code>state</code>.</p>
+      <pre>if (robot.distance() &lt; 20) {
+  state.lastTurn = 'left';
+  robot.drive(-0.4, 0.7);
+} else if (state.lastTurn === 'left') {
+  robot.drive(0.7, 0.2);
+} else {
+  robot.drive(0.8, 0.8);
+}</pre>
+      <p><code>state</code> is like short-term memory. It helps the robot continue a behavior after a sensor event.</p>
+<details><summary>Detailed explanation and example</summary>
+  <h4>What state remembers</h4><p>The program body is called again on every tick, so ordinary local variables are created again each time. The simulator's <code>state</code> object persists between ticks. Store information there when a later decision needs it.</p>
+  <h4>Example: remember a search direction</h4><pre>if (robot.lineLeft()) state.lastSeen = 'left';
+if (robot.lineRight()) state.lastSeen = 'right';
+
+if (!robot.lineLeft() &amp;&amp; !robot.lineRight()) {
+  if (state.lastSeen === 'left') robot.drive(-0.2, 0.5);
+  else robot.drive(0.5, -0.2);
+}</pre><p>This remembers which side last detected the line so the robot can search that way after losing it.</p>
+  <p class="try-it"><strong>Try it:</strong> Change the saved directions and observe how the robot searches when both sensors are off the line.</p>
+</details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Robot combining several behavior inputs"><use href="#art-behaviors"></use></svg>
+      <span class="level">Advanced · 10</span><h3 data-icon="🧩">Behavior-based robotics</h3>
+      <p>Advanced robots combine many simple rules into one system. For example, they might avoid obstacles, follow a line, and stop in a safe area.</p>
+      <pre>const close = robot.distance() &lt; 18;
+const L = robot.lineLeft();
+const R = robot.lineRight();
+
+if (close) {
+  robot.drive(-0.7, 0.7);
+} else if (L) {
+  robot.drive(0.1, 0.8);
+} else if (R) {
+  robot.drive(0.8, 0.1);
+} else {
+  robot.drive(0.8, 0.8);
+}</pre>
+      <p>Robotics at this level is about balancing several goals at once.</p>
+<details><summary>Detailed explanation and example</summary>
+  <h4>Priorities prevent conflicting actions</h4><p>A behavior-based robot can have several goals, such as avoid a collision and follow a line. The order of the conditions is a priority system: safety first, then navigation, then ordinary forward motion. Only the first matching branch runs.</p>
+  <h4>Example: make safety the top priority</h4><pre>if (robot.distance() &lt; 18) {
+  robot.drive(-0.6, 0.6); // avoid first
+} else if (robot.lineLeft()) {
+  robot.drive(0.2, 0.8);  // follow the line
+} else if (robot.lineRight()) {
+  robot.drive(0.8, 0.2);
+} else {
+  robot.drive(0.6, 0.6);  // fallback
+}</pre><p>A fallback branch is important: it defines what happens when none of the special cases is true.</p>
+  <p class="try-it"><strong>Try it:</strong> Change the order of the obstacle and line checks. Discuss why obstacle avoidance should usually have higher priority.</p>
+</details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Magnifying glass inspecting a robot's performance chart"><use href="#art-debug"></use></svg>
+      <span class="level">Advanced · 11</span><h3 data-icon="🔧">Debugging and tuning</h3>
+      <p>Good robot programs are not written once and finished. They are tested, adjusted, and tuned. Small changes can make a big difference.</p>
+      <ul>
+        <li>Increase turning speed if the robot is too slow to avoid obstacles.</li>
+        <li>Reduce forward speed for smooth line following.</li>
+        <li>Use <code>state</code> to remember direction after losing a line.</li>
+      </ul>
+      <p>Debugging means checking what the robot sees and why it makes each decision.</p>
+      <details><summary>Detailed explanation and example</summary>
+        <h4>Change one thing at a time</h4><p>When a robot behaves badly, first identify what you expected and what actually happened. Check the sensor reading, the condition it should satisfy, and the motor command selected. Then adjust one value and test again so you know what caused the change.</p>
+        <h4>Example tuning log</h4><ul><li>Problem: robot hits obstacles before turning.</li><li>Change: increase the turn threshold from 15 to 25.</li><li>Test: run again and observe the closest approach.</li><li>Next: adjust turning speed if it still cannot turn in time.</li></ul>
+        <p>Speed, sensor noise, and slippery floor in the simulator can help test whether a behavior still works under less ideal conditions.</p>
+        <p class="try-it"><strong>Try it:</strong> Turn on sensor noise or slippery floor, observe a failure, and change only one setting or code value at a time.</p>
+      </details>
+    </article>
+
+    <article class="card lesson">
+      <svg class="lesson-art" role="img" aria-label="Autonomous robot correcting its path with feedback"><use href="#art-autonomy"></use></svg>
+      <span class="level">Expert · 12</span><h3 data-icon="🚀">Feedback and autonomy</h3>
+      <p>Expert robotics is about feedback loops: the robot reads the world, reacts, then reads again. It continuously corrects itself.</p>
+      <pre>const L = robot.lineLeft();
+const R = robot.lineRight();
+
+if (L && R) {
+  robot.drive(0.8, 0.8);
+  state.last = 'straight';
+} else if (L) {
+  robot.drive(0.2, 0.8);
+  state.last = 'left';
+} else if (R) {
+  robot.drive(0.8, 0.2);
+  state.last = 'right';
+} else if (state.last === 'left') {
+  robot.drive(-0.2, 0.5);
+} else {
+  robot.drive(0.5, -0.2);
+}</pre>
+      <p>At the expert level, the robot does not just follow a fixed rule. It adapts and recovers from uncertainty.</p>
+<details><summary>Detailed explanation and example</summary>
+  <h4>Feedback and stability</h4><p>Feedback means repeatedly comparing the current sensor reading with the desired situation and correcting the motor output. A very aggressive correction can make the robot wobble; a very weak correction can make it drift away. Good control balances response speed with smoothness.</p>
+  <h4>Advanced tuning idea</h4><p>For line following, increase the difference between the two wheel speeds when the robot needs a sharper correction. Reduce that difference for smoother movement. Test several runs rather than judging from one moment, especially when sensor noise is enabled.</p>
+  <h4>Example: add a dead zone</h4><pre>const L = robot.lineLeft();
+const R = robot.lineRight();
+if (L === R) {
+  robot.drive(0.65, 0.65); // both on or both off: go steady
+} else if (L) {
+  robot.drive(0.25, 0.7);
+} else {
+  robot.drive(0.7, 0.25);
+}</pre><p>This simplified controller uses moderate steering instead of sharp spins. It is a starting point; different tracks and sensor placement may require different values.</p>
+  <p class="try-it"><strong>Try it:</strong> Compare this smoother controller with the sharper one in Line track mode. Tune the wheel values and explain which is more stable.</p>
+</details>
+    </article>
+  </div>
+</section>
+<section id="session-view" class="app-view hidden session-shell">
+  <div id="session-content"></div>
+</section>
+<section id="project-view" class="app-view hidden project-shell">
+  <div class="card project-hero">
+    <span class="course-tag" data-i18n-en="Real hardware · beginner build" data-i18n-ar="روبوت حقيقي · مشروع للمبتدئين">Real hardware · beginner build</span>
+    <h2 data-i18n-en="Build a real obstacle-avoiding robot" data-i18n-ar="ابنِ روبوتًا حقيقيًا يتجنب العوائق">Build a real obstacle-avoiding robot</h2>
+    <p data-i18n-en="Take the simulator ideas into the classroom: assemble a small two-wheel robot, measure distance with an ultrasonic sensor, and use a microcontroller to steer away from obstacles." data-i18n-ar="لنحوّل أفكار المحاكي إلى مشروع حقيقي: نركّب روبوتًا صغيرًا بعجلتين، ونقيس المسافة بحساس الموجات فوق الصوتية، ونستخدم لوحة تحكم لنجعل الروبوت يبتعد عن العوائق.">Take the simulator ideas into the classroom: assemble a small two-wheel robot, measure distance with an ultrasonic sensor, and use a microcontroller to steer away from obstacles.</p>
+    <p data-i18n-en="Goal: Build a low-voltage, two-wheel robot that moves forward and turns when an object is close. Allow about 2–3 hours for the first build, plus testing time." data-i18n-ar="الهدف: بناء روبوت آمن منخفض الجهد بعجلتين، يسير إلى الأمام وينعطف عندما يقترب من شيء. خصّصوا نحو ساعتين إلى ثلاث ساعات للتركيب الأول، ثم وقتًا للتجربة.">Goal: Build a low-voltage, two-wheel robot that moves forward and turns when an object is close. Allow about 2–3 hours for the first build, plus testing time.</p>
+  </div>
+
+  <div class="project-grid">
+    <article class="card project-card">
+      <h3 data-i18n-en="🧰 Parts and tools" data-i18n-ar="🧰 القطع والأدوات">🧰 Parts and tools</h3>
+      <ul>
+        <li data-i18n-en="An Arduino Uno or compatible board, with a USB cable" data-i18n-ar="لوحة Arduino Uno أو لوحة متوافقة، مع كابل USB">Arduino Uno or compatible board with USB cable</li>
+        <li data-i18n-en="A two-wheel-drive robot chassis, two DC gear motors, two wheels, and one caster wheel" data-i18n-ar="قاعدة روبوت بدفع ثنائي، ومحركان يعملان بالتيار المستمر، وعجلتان، وعجلة صغيرة حرة">2WD robot chassis, two DC gear motors, two wheels, and a caster</li>
+        <li data-i18n-en="A TB6612FNG dual motor-driver board" data-i18n-ar="لوحة تشغيل محركين من نوع TB6612FNG">TB6612FNG dual motor driver breakout</li>
+        <li data-i18n-en="An HC-SR04 ultrasonic distance sensor" data-i18n-ar="حساس مسافة بالموجات فوق الصوتية من نوع HC-SR04">HC-SR04 ultrasonic distance sensor</li>
+        <li data-i18n-en="A motor battery pack suitable for the motors and driver (for example, 4×AA NiMH cells if compatible)" data-i18n-ar="حامل بطاريات مناسب للمحركات ولوحة التشغيل (مثل أربع بطاريات AA من نوع NiMH إذا كانت مناسبة)">Motor battery pack matched to the motors and driver (for example, 4×AA NiMH when compatible)</li>
+        <li data-i18n-en="Jumper wires, a small screwdriver, and mounting tape or screws" data-i18n-ar="أسلاك توصيل، ومفك صغير، وشريط تثبيت أو مسامير">Jumper wires, small screwdriver, and tape or mounting screws</li>
+        <li data-i18n-en="A computer with Arduino IDE; a multimeter is optional" data-i18n-ar="كمبيوتر عليه برنامج Arduino IDE؛ جهاز قياس الكهرباء اختياري">Computer with Arduino IDE; optional multimeter</li>
+      </ul>
+      <p data-i18n-en="Before buying: check that the motors’ voltage and current are within the motor driver’s limits. Motor and battery needs differ between kits." data-i18n-ar="قبل الشراء: تأكدوا أن جهد المحركات وشدّة تيارها لا يتجاوزان حدود لوحة تشغيل المحركات. تختلف المحركات والبطاريات المناسبة من طقم إلى آخر.">Before buying: check that the motors’ voltage and current are within the motor driver’s limits. Motor and battery needs differ between kits.</p>
+    </article>
+
+    <article class="card project-card">
+      <h3 data-i18n-en="🧠 What each part does" data-i18n-ar="🧠 وظيفة كل قطعة">🧠 What each part does</h3>
+      <ul>
+        <li data-i18n-en="Arduino: runs the repeating program that senses, decides, and acts." data-i18n-ar="لوحة Arduino: تشغّل برنامجًا يتكرر ليحسّ بالبيئة، ثم يقرر، ثم يتحرك."><strong>Arduino:</strong> runs the repeated sense-decide-act program.</li>
+        <li data-i18n-en="Ultrasonic sensor: estimates how far away an object is in front." data-i18n-ar="حساس الموجات فوق الصوتية: يقدّر بُعد الشيء الموجود أمام الروبوت."><strong>Ultrasonic sensor:</strong> estimates distance ahead.</li>
+        <li data-i18n-en="Motor driver: safely controls the electrical current for the motors. Arduino pins cannot power DC motors directly." data-i18n-ar="لوحة تشغيل المحركات: تتحكم بأمان في الكهرباء التي تصل إلى المحركات. لا تستطيع أرجل Arduino تشغيل محركات التيار المستمر مباشرة."><strong>Motor driver:</strong> safely switches motor current; the Arduino pins cannot power DC motors directly.</li>
+        <li data-i18n-en="Two motors: changing the left and right wheel speeds makes the robot turn." data-i18n-ar="المحركان: تغيير سرعة العجلة اليسرى واليمنى يجعل الروبوت ينعطف."><strong>Two motors:</strong> different left/right speeds steer the chassis.</li>
+        <li data-i18n-en="Battery pack: supplies motor power through the motor driver." data-i18n-ar="حامل البطاريات: يزوّد المحركات بالطاقة عن طريق لوحة تشغيل المحركات."><strong>Battery pack:</strong> supplies the motors through the driver.</li>
+      </ul>
+      <p data-i18n-en="This build uses the same ideas as the simulator—sensors, a controller, and motor commands—but real motors have friction, batteries have limits, and floors are not always smooth." data-i18n-ar="يستخدم هذا المشروع أفكار المحاكي نفسها: الحساسات، ولوحة التحكم، وأوامر المحركات. لكن المحركات الحقيقية فيها احتكاك، والبطاريات لها حدود، والأرض ليست دائمًا ملساء.">This build uses the same ideas as the simulator's sensors, controller, and motor commands, but real motors have friction, battery limits, and uneven surfaces.</p>
+    </article>
+
+    <article class="card project-card project-wide build-guide">
+      <h3 data-i18n-en="📸 Build it step by step" data-i18n-ar="📸 نبني الروبوت خطوة خطوة">📸 Build it step by step</h3>
+      <p class="build-guide-intro" data-i18n-en="Start with the robot body, then add its brain and distance sensor. These openly licensed photos show example parts; kits can look different. Use the wiring table below for this project's exact TB6612FNG connections." data-i18n-ar="نبدأ بجسم الروبوت، ثم نضيف عقله وحساس المسافة. هذه الصور المرخّصة تعرض أمثلة على القطع؛ قد تبدو قطعك مختلفة. استخدم جدول التوصيل أدناه لتوصيلات TB6612FNG الصحيحة في هذا المشروع.">Start with the robot body, then add its brain and distance sensor. These openly licensed photos show example parts; kits can look different. Use the wiring table below for this project's exact TB6612FNG connections.</p>
+      <div class="build-guide-grid">
+        <article class="card build-guide-step">
+          <figure>
+            <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Small_wheeled_robot_chassis_displayed_on_shelves.jpg/960px-Small_wheeled_robot_chassis_displayed_on_shelves.jpg" alt="Small wheeled robot chassis displayed at a technology exhibition" data-i18n-alt-en="Small wheeled robot chassis displayed at a technology exhibition" data-i18n-alt-ar="قاعدة روبوت صغيرة بعجلات معروضة في معرض تقني" loading="lazy" decoding="async">
+            <figcaption><span data-i18n-en="Photo:" data-i18n-ar="الصورة:">Photo:</span> <a href="https://commons.wikimedia.org/wiki/File:Small_wheeled_robot_chassis_displayed_on_shelves.jpg" target="_blank" rel="noopener">Small wheeled robot chassis</a> <span data-i18n-en="by Mrshaxas, licensed" data-i18n-ar="للمصوّر Mrshaxas، بترخيص">by Mrshaxas, licensed</span> <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</figcaption>
+          </figure>
+          <h4 data-i18n-en="1. Make a steady base" data-i18n-ar="١. جهّز قاعدة ثابتة">1. Make a steady base</h4>
+          <p data-i18n-en="Attach the two geared motors to the chassis, fit a wheel on each motor shaft, and secure the small caster at the other end. Check that both wheels spin freely and the frame does not wobble." data-i18n-ar="ثبّت المحرّكين في القاعدة، ثم ركّب عجلة على كل محرّك وثبّت العجلة الصغيرة في الطرف الآخر. تأكد أن العجلتين تدوران بسهولة وأن القاعدة ثابتة.">Attach the two geared motors to the chassis, fit a wheel on each motor shaft, and secure the small caster at the other end. Check that both wheels spin freely and the frame does not wobble.</p>
+        </article>
+        <article class="card build-guide-step">
+          <figure>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg" alt="Arduino Uno R3 microcontroller board" data-i18n-alt-en="Arduino Uno R3 microcontroller board" data-i18n-alt-ar="لوحة تحكم Arduino Uno R3" loading="lazy" decoding="async">
+            <figcaption><span data-i18n-en="Photo:" data-i18n-ar="الصورة:">Photo:</span> <a href="https://commons.wikimedia.org/wiki/File:Arduino_Uno_-_R3.jpg" target="_blank" rel="noopener">Arduino Uno - R3</a> <span data-i18n-en="by SparkFun Electronics, licensed" data-i18n-ar="لشركة SparkFun Electronics، بترخيص">by SparkFun Electronics, licensed</span> <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>.</figcaption>
+          </figure>
+          <h4 data-i18n-en="2. Mount the robot's brain" data-i18n-ar="٢. ثبّت عقل الروبوت">2. Mount the robot's brain</h4>
+          <p data-i18n-en="Secure the Arduino on top of the chassis with short screws or safe mounting tape. Keep metal parts away from the pins so they cannot accidentally connect. Leave the USB port easy to reach." data-i18n-ar="ثبّت لوحة Arduino فوق القاعدة بمسامير قصيرة أو شريط تثبيت مناسب. أبعد القطع المعدنية عن الأرجل حتى لا تلمس بعضها بالخطأ. اترك منفذ USB سهل الوصول.">Secure the Arduino on top of the chassis with short screws or safe mounting tape. Keep metal parts away from the pins so they cannot accidentally connect. Leave the USB port easy to reach.</p>
+        </article>
+        <article class="card build-guide-step">
+          <figure>
+            <div class="build-guide-images paired">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/SparkFun_HC-SR04_Ultrasonic-Sensor_13959-01a.jpg" alt="HC-SR04 ultrasonic distance sensor module" data-i18n-alt-en="HC-SR04 ultrasonic distance sensor module" data-i18n-alt-ar="حساس المسافة بالموجات فوق الصوتية HC-SR04" loading="lazy" decoding="async">
+              <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/HC-SR04_triggering.svg/960px-HC-SR04_triggering.svg.png" alt="Diagram showing the trigger pulse and returning echo for an HC-SR04 sensor" data-i18n-alt-en="Diagram showing the trigger pulse and returning echo for an HC-SR04 sensor" data-i18n-alt-ar="رسم يوضح نبضة الإرسال وعودة الصدى في حساس HC-SR04" loading="lazy" decoding="async">
+            </div>
+            <figcaption><span data-i18n-en="Sensor photo:" data-i18n-ar="صورة الحساس:">Sensor photo:</span> <a href="https://commons.wikimedia.org/wiki/File:SparkFun_HC-SR04_Ultrasonic-Sensor_13959-01a.jpg" target="_blank" rel="noopener">HC-SR04 ultrasonic sensor</a> <span data-i18n-en="by SparkFun, licensed" data-i18n-ar="لشركة SparkFun، بترخيص">by SparkFun, licensed</span> <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>. <span data-i18n-en="Diagram:" data-i18n-ar="الرسم:">Diagram:</span> <a href="https://commons.wikimedia.org/wiki/File:HC-SR04_triggering.svg" target="_blank" rel="noopener">HC-SR04 triggering</a> <span data-i18n-en="by Giacomo Alessandroni, licensed" data-i18n-ar="للمصوّر Giacomo Alessandroni، بترخيص">by Giacomo Alessandroni, licensed</span> <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</figcaption>
+          </figure>
+          <h4 data-i18n-en="3. Give the robot eyes" data-i18n-ar="٣. أعطِ الروبوت عينين">3. Give the robot eyes</h4>
+          <p data-i18n-en="Mount the HC-SR04 at the front, facing straight ahead. One round part sends a tiny sound pulse; the other listens for its echo. The Arduino uses the echo's travel time to estimate how far away an obstacle is." data-i18n-ar="ثبّت حساس HC-SR04 في مقدمة الروبوت ووجّهه إلى الأمام. ترسل الدائرة الأولى صوتًا قصيرًا جدًا، وتستمع الثانية إلى صدى الصوت. يستخدم Arduino وقت عودة الصدى ليقدّر بُعد العائق.">Mount the HC-SR04 at the front, facing straight ahead. One round part sends a tiny sound pulse; the other listens for its echo. The Arduino uses the echo's travel time to estimate how far away an obstacle is.</p>
+        </article>
+      </div>
+      <p class="build-guide-note"><strong data-i18n-en="What happens next?" data-i18n-ar="ماذا نفعل بعد ذلك؟">What happens next?</strong> <span data-i18n-en="Connect the motor driver and sensor using the wiring table, then upload the starter program. Keep all power disconnected while wiring, and ask an adult to check the connections before the first test." data-i18n-ar="صِل مشغّل المحركات والحساس حسب جدول التوصيل، ثم حمّل البرنامج. افصل الكهرباء أثناء التوصيل، واطلب من شخص بالغ فحص الأسلاك قبل التجربة الأولى.">Connect the motor driver and sensor using the wiring table, then upload the starter program. Keep all power disconnected while wiring, and ask an adult to check the connections before the first test.</span></p>
+      <p><a href="https://www.instructables.com/Arduino-Ultimate-Obstacle-Avoiding-Robot/" target="_blank" rel="noopener" data-i18n-en="Read the original Instructables guide for another obstacle-avoiding robot example →" data-i18n-ar="اقرأ دليل Instructables الأصلي لرؤية مثال آخر لروبوت يتجنب العوائق ←">Read the original Instructables guide for another obstacle-avoiding robot example →</a></p>
+    </article>
+
+    <article class="card project-card project-wide">
+      <h3 data-i18n-en="🔌 Wiring guide (TB6612FNG + HC-SR04 + Arduino Uno)" data-i18n-ar="🔌 دليل التوصيل (TB6612FNG + HC-SR04 + Arduino Uno)">🔌 Wiring guide (TB6612FNG + HC-SR04 + Arduino Uno)</h3>
+      <p data-i18n-en="Disconnect the USB cable and motor battery before changing any wires. Use this pin map only with a compatible TB6612FNG board. Board labels can differ, so check the documentation for your board." data-i18n-ar="افصل كابل USB وبطارية المحركات قبل تغيير أي سلك. استخدم هذا الجدول مع لوحة TB6612FNG متوافقة فقط. قد تختلف أسماء الأرجل بين اللوحات، لذلك راجع دليل لوحتك.">Disconnect USB and the motor battery before changing any wires. Use this pin map only with a compatible TB6612FNG breakout; board labels can vary, so check its documentation.</p>
+      <div class="project-table-wrap">
+        <table class="project-table">
+          <thead><tr><th data-i18n-en="Part pin" data-i18n-ar="رجل القطعة">Part pin</th><th data-i18n-en="Connect to" data-i18n-ar="التوصيل إلى">Connect to</th><th data-i18n-en="Purpose" data-i18n-ar="الوظيفة">Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>TB6612 VCC</td><td data-i18n-en="Arduino 5V" data-i18n-ar="5V في Arduino">Arduino 5V</td><td data-i18n-en="Logic power for the motor driver" data-i18n-ar="طاقة تشغيل لوحة المحركات">Motor-driver logic power</td></tr>
+            <tr><td>TB6612 GND</td><td data-i18n-en="Arduino GND and battery negative" data-i18n-ar="GND في Arduino وسالب البطارية">Arduino GND and battery negative</td><td data-i18n-en="Shared ground connection" data-i18n-ar="أرضي مشترك بين القطع">Shared ground/reference</td></tr>
+            <tr><td>TB6612 VM</td><td data-i18n-en="Motor battery positive" data-i18n-ar="موجب بطارية المحركات">Motor battery positive</td><td data-i18n-en="Motor power (stay within the driver and motor ratings)" data-i18n-ar="طاقة المحركات (ضمن حدود اللوحة والمحركات)">Motor supply (within driver/motor rating)</td></tr>
+            <tr><td>TB6612 PWMA / AIN1 / AIN2</td><td>Arduino D5 / D7 / D8</td><td data-i18n-en="Left motor speed and direction" data-i18n-ar="سرعة المحرك الأيسر واتجاهه">Left motor speed and direction</td></tr>
+            <tr><td>TB6612 PWMB / BIN1 / BIN2</td><td>Arduino D6 / D9 / D10</td><td data-i18n-en="Right motor speed and direction" data-i18n-ar="سرعة المحرك الأيمن واتجاهه">Right motor speed and direction</td></tr>
+            <tr><td>TB6612 STBY</td><td>Arduino D4</td><td data-i18n-en="Standby control (HIGH turns on the outputs)" data-i18n-ar="التحكم بوضع الاستعداد (HIGH يشغّل المخارج)">Driver standby control (HIGH enables outputs)</td></tr>
+            <tr><td>TB6612 A01 / A02</td><td data-i18n-en="Left motor terminals" data-i18n-ar="طرفا المحرك الأيسر">Left motor terminals</td><td data-i18n-en="Left motor output" data-i18n-ar="خرج المحرك الأيسر">Left motor output</td></tr>
+            <tr><td>TB6612 B01 / B02</td><td data-i18n-en="Right motor terminals" data-i18n-ar="طرفا المحرك الأيمن">Right motor terminals</td><td data-i18n-en="Right motor output" data-i18n-ar="خرج المحرك الأيمن">Right motor output</td></tr>
+            <tr><td>HC-SR04 VCC / GND</td><td data-i18n-en="Arduino 5V / GND" data-i18n-ar="5V / GND في Arduino">Arduino 5V / GND</td><td data-i18n-en="Sensor power" data-i18n-ar="طاقة الحساس">Sensor power</td></tr>
+            <tr><td>HC-SR04 TRIG / ECHO</td><td>Arduino D11 / D12</td><td data-i18n-en="Distance measurement signals" data-i18n-ar="إشارات قياس المسافة">Distance measurement signals</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="project-note" data-i18n-en="Important: Arduino GND, driver GND, and battery negative must be connected together. Motor power comes from the battery through the motor driver—not from Arduino 5V or an Arduino pin. Keep the motor supply within the limits of the motors and driver." data-i18n-ar="مهم: يجب توصيل GND في Arduino وGND في لوحة المحركات وسالب البطارية معًا. تأتي طاقة المحركات من البطارية عبر لوحة التشغيل، وليس من 5V أو أحد أرجل Arduino. استخدم طاقة ضمن حدود المحركات ولوحة التشغيل."><strong>Important:</strong> Arduino GND, driver GND, and battery negative must share ground. Motor power flows from the battery through the driver, not from Arduino 5V or an I/O pin. Keep the motor supply within the motor and driver specifications.</p>
+    </article>
+
+    <article class="card project-card project-wide">
+      <h3 data-i18n-en="🛠️ Build and test in stages" data-i18n-ar="🛠️ ركّب الروبوت واختبره خطوة خطوة">🛠️ Build and test in stages</h3>
+      <ol class="project-checklist">
+        <li data-i18n-en="Assemble the chassis, attach the motors and wheels, and secure the caster wheel." data-i18n-ar="ركّب قاعدة الروبوت، وثبّت المحركين والعجلتين، ثم ثبّت العجلة الصغيرة الحرة.">Assemble the chassis, mount the motors and wheels, and secure the caster.</li>
+        <li data-i18n-en="Mount the Arduino, motor driver, and forward-facing ultrasonic sensor. Keep wires away from the wheels." data-i18n-ar="ثبّت لوحة Arduino ولوحة تشغيل المحركات والحساس المواجه إلى الأمام. أبعد الأسلاك عن العجلات.">Mount the Arduino, motor driver, and ultrasonic sensor facing forward. Keep wheels clear of wires.</li>
+        <li data-i18n-en="Disconnect all power. Follow the table to connect the motor driver and sensor. Check the positive and negative connections and pin numbers twice." data-i18n-ar="افصل كل مصادر الكهرباء. صِل لوحة المحركات والحساس حسب الجدول. راجع التوصيلات الموجبة والسالبة وأرقام الأرجل مرتين.">With all power disconnected, wire the driver and sensor using the table. Double-check polarity and pin numbers.</li>
+        <li data-i18n-en="Connect the USB cable and upload the program below while the motor battery is disconnected. Check that there are no compile or upload errors." data-i18n-ar="صِل كابل USB وحمّل البرنامج أدناه، مع فصل بطارية المحركات. تأكد من عدم ظهور أخطاء عند فحص البرنامج أو تحميله.">Connect USB and upload the program below with the motor battery disconnected. Check for compile/upload errors.</li>
+        <li data-i18n-en="Lift the robot so the wheels are clear of the table. Connect the motor battery and test briefly. Disconnect power if anything becomes hot, smells unusual, or moves unexpectedly." data-i18n-ar="ارفع الروبوت كي لا تلمس عجلاته الطاولة. صِل بطارية المحركات واختبره قليلًا. افصل الكهرباء إذا سخنت قطعة، أو ظهرت رائحة غريبة، أو تحرك الروبوت بطريقة غير متوقعة.">Raise the robot so its wheels are off the table. Connect the motor battery and briefly test; disconnect power if anything heats, smells, or moves unexpectedly.</li>
+        <li data-i18n-en="Place the robot on a clear floor and use a low speed. Put a soft obstacle in front and watch how the distance reading changes and the robot turns." data-i18n-ar="ضع الروبوت على أرض خالية وشغّله بسرعة منخفضة. ضع عائقًا لينًا أمامه، وراقب قراءة المسافة وكيف ينعطف.">Place it on a clear floor at low speed. Put a soft obstacle ahead and observe the distance response and turn.</li>
+        <li data-i18n-en="If a wheel turns the wrong way, disconnect power. Then swap that motor’s two output wires, or change its direction in the program." data-i18n-ar="إذا دارت إحدى العجلتين بالعكس، افصل الكهرباء أولًا. ثم بدّل سلكي المحرك، أو غيّر اتجاهه في البرنامج.">If one wheel turns the wrong way, switch that motor's two output wires with power disconnected, or invert that motor's direction logic in code.</li>
+      </ol>
+    </article>
+
+    <article class="card project-card project-wide">
+      <h3 data-i18n-en="💻 Starter Arduino program" data-i18n-ar="💻 برنامج Arduino للبدء">💻 Starter Arduino program</h3>
+      <p data-i18n-en="This program measures distance and turns the robot when an obstacle is closer than the limit. A short pause lets the sensor take another reading. Test slowly in an open area, then adjust the distance limit and motor speeds for your robot." data-i18n-ar="يقيس هذا البرنامج المسافة ويجعل الروبوت ينعطف إذا اقترب العائق أكثر من الحد المحدد. تساعده وقفة قصيرة على أخذ قراءة جديدة من الحساس. اختبره ببطء في مكان مفتوح، ثم عدّل حد المسافة وسرعة المحركات لتناسب روبوتك.">This example measures distance and turns in place below a threshold. The delay gives the ultrasonic sensor time between readings. Test in an open area at low speed; tune the threshold and motor speeds for your chassis.</p>
+      <pre>const int PWMA = 5, AIN1 = 7, AIN2 = 8;
+const int PWMB = 6, BIN1 = 9, BIN2 = 10;
+const int STBY = 4;
+const int TRIG = 11, ECHO = 12;
+
+int readDistanceCm() {
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(3);
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG, LOW);
+
+  // Stop safely if the sensor does not return an echo.
+  unsigned long duration = pulseIn(ECHO, HIGH, 25000UL);
+  if (duration == 0) return -1;
+  return (int)(duration * 0.0343 / 2.0);
+}
+
+void setMotor(int pwmPin, int in1, int in2, int speed) {
+  speed = constrain(speed, -180, 180);
+  digitalWrite(in1, speed >= 0 ? HIGH : LOW);
+  digitalWrite(in2, speed >= 0 ? LOW : HIGH);
+  analogWrite(pwmPin, abs(speed));
+}
+
+void drive(int left, int right) {
+  setMotor(PWMA, AIN1, AIN2, left);
+  setMotor(PWMB, BIN1, BIN2, right);
+}
+
+void setup() {
+  pinMode(PWMA, OUTPUT); pinMode(AIN1, OUTPUT); pinMode(AIN2, OUTPUT);
+  pinMode(PWMB, OUTPUT); pinMode(BIN1, OUTPUT); pinMode(BIN2, OUTPUT);
+  pinMode(STBY, OUTPUT);
+  pinMode(TRIG, OUTPUT); pinMode(ECHO, INPUT);
+  digitalWrite(STBY, HIGH);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int distance = readDistanceCm();
+  Serial.println(distance); // View readings in Serial Monitor
+
+  if (distance < 0) {
+    drive(0, 0); // fail safe if the sensor reading is unavailable
+  } else if (distance < 20) {
+    drive(-100, 100); // turn in place
+    delay(350);
+  } else {
+    drive(110, 110);  // move forward
+  }
+  delay(40);
+}</pre>
+      <p data-i18n-en="Code idea: readDistanceCm() gets information from the sensor, the if statement chooses what to do, and drive() controls the motors. The Serial Monitor lets you compare the sensor reading with a real measurement." data-i18n-ar="فكرة البرنامج: تقرأ الدالة readDistanceCm() المعلومات من الحساس، ويختار الشرط if ما يجب فعله، وتتحكم الدالة drive() بالمحركات. تساعدك نافذة Serial Monitor على مقارنة قراءة الحساس بالمسافة الحقيقية."><strong>Code idea:</strong> <code>readDistanceCm()</code> is the sensor input, the <code>if</code> statement is the decision, and <code>drive()</code> controls the motor outputs. The serial monitor helps compare sensor readings with real distances.</p>
+    </article>
+
+    <article class="card project-card">
+      <h3 data-i18n-en="🧪 Troubleshooting" data-i18n-ar="🧪 حلّ المشكلات">🧪 Troubleshooting</h3>
+      <ul>
+        <li data-i18n-en="Arduino restarts when the motors start: the motor power may be lowering the board’s voltage. Use a suitable separate motor battery and connect the grounds together." data-i18n-ar="تعيد لوحة Arduino التشغيل عند بدء المحركات: قد تسحب المحركات طاقة كبيرة فتقل الكهرباء التي تصل إلى اللوحة. استخدم بطارية مناسبة للمحركات، وصِل أسلاك الأرضي معًا."><strong>Arduino resets when motors start:</strong> motor power may be pulling down the logic supply; use a suitable separate motor battery and common ground.</li>
+        <li data-i18n-en="The distance always reads 200: check the TRIG and ECHO wires, the direction of the sensor, and the shared ground." data-i18n-ar="قراءة المسافة دائمًا 200: افحص أسلاك TRIG وECHO، واتجاه الحساس، وتوصيل الأرضي المشترك."><strong>Distance always reads 200:</strong> check TRIG/ECHO wiring, sensor direction, and shared ground.</li>
+        <li data-i18n-en="The robot spins instead of going straight: test each motor separately. One may be reversed or faster than the other." data-i18n-ar="يدور الروبوت في مكانه بدل السير مستقيمًا: اختبر كل محرك وحده. قد يكون أحدهما معكوسًا أو أسرع من الآخر."><strong>Robot spins instead of going straight:</strong> test motors separately; they may be reversed or have different speeds.</li>
+        <li data-i18n-en="The robot hits obstacles before turning: increase the 20 cm limit or lower the forward speed." data-i18n-ar="يصطدم الروبوت بالعائق قبل أن ينعطف: زد حد المسافة 20 سم أو خفّض سرعة السير إلى الأمام."><strong>It hits obstacles before turning:</strong> increase the 20 cm threshold or lower forward speed.</li>
+        <li data-i18n-en="The robot keeps turning away: make sure the sensor is not pointing at the floor or the robot’s body." data-i18n-ar="يستمر الروبوت في الابتعاد والانعطاف: تأكد أن الحساس لا يشير إلى الأرض أو إلى جسم الروبوت."><strong>It turns away continuously:</strong> check the sensor is not aimed at the floor or chassis.</li>
+      </ul>
+    </article>
+
+    <article class="card project-card">
+      <h3 data-i18n-en="🛡️ Classroom safety" data-i18n-ar="🛡️ السلامة أثناء العمل">🛡️ Classroom safety</h3>
+      <ul>
+        <li data-i18n-en="Use only low-voltage, battery-powered kits. Never connect a student project to a wall outlet." data-i18n-ar="استخدموا أطقمًا تعمل ببطاريات منخفضة الجهد فقط. لا توصلوا مشروع الأطفال بالكهرباء المنزلية أبدًا.">Use only low-voltage battery-powered kits; never connect student circuits to mains electricity.</li>
+        <li data-i18n-en="Ask an adult to supervise wiring, tools, and battery choice." data-i18n-ar="اطلبوا من شخص بالغ الإشراف على الأسلاك والأدوات واختيار البطاريات.">Have an adult supervise wiring, tools, and battery selection.</li>
+        <li data-i18n-en="Disconnect the USB cable and batteries before changing wires. Never let the battery wires touch each other." data-i18n-ar="افصلوا كابل USB والبطاريات قبل تغيير الأسلاك. لا تدعوا أسلاك البطارية تلمس بعضها أبدًا.">Disconnect USB and batteries before rewiring. Prevent battery short circuits.</li>
+        <li data-i18n-en="Do not use batteries that are damaged, swollen, hot, or leaking. Recharge batteries only with the correct charger and an adult’s help." data-i18n-ar="لا تستخدموا بطارية تالفة أو منتفخة أو ساخنة أو يتسرب منها شيء. اشحنوا البطاريات القابلة للشحن بالشاحن المناسب وبمساعدة شخص بالغ فقط.">Do not use damaged, swollen, hot, or leaking batteries. Charge rechargeable cells only with the correct charger and adult supervision.</li>
+        <li data-i18n-en="Keep fingers, hair, and loose wires away from the wheels and moving parts." data-i18n-ar="أبعدوا الأصابع والشعر والأسلاك المتدلية عن العجلات والأجزاء المتحركة.">Keep fingers, hair, and loose wires away from wheels and moving parts.</li>
+        <li data-i18n-en="Test slowly on a clear floor, away from stairs, people, and pets." data-i18n-ar="اختبروا الروبوت ببطء على أرض خالية، بعيدًا عن الدرج والناس والحيوانات الأليفة.">Test on the floor in a clear area at low speed, away from stairs, people, and pets.</li>
+      </ul>
+    </article>
+
+    <article class="card project-card project-wide">
+      <h3 data-i18n-en="🚀 Next project upgrades" data-i18n-ar="🚀 أفكار لتطوير المشروع">🚀 Next project upgrades</h3>
+      <ul>
+        <li data-i18n-en="Add a bumper switch as a backup sensor to detect a collision." data-i18n-ar="أضف مفتاحًا أماميًا يساعد على اكتشاف الاصطدام كحساس احتياطي.">Add a bumper switch as a backup collision sensor.</li>
+        <li data-i18n-en="Build a line-following robot with two infrared sensors. Calibrate the sensors on the track you will use." data-i18n-ar="ابنِ روبوتًا يتبع خطًا باستخدام حساسين بالأشعة تحت الحمراء. اضبط الحساسين على المسار الذي ستستخدمه.">Build a line-following robot with two IR reflectance sensors; calibrate sensor readings on the actual track.</li>
+        <li data-i18n-en="Add an LED or buzzer to show when an obstacle is detected." data-i18n-ar="أضف مصباح LED أو جرسًا ليخبرك الروبوت عندما يكتشف عائقًا.">Add an LED or buzzer to indicate obstacle detection.</li>
+        <li data-i18n-en="Use wheel encoders to count wheel turns, then compare the robot’s planned distance with how far it really travelled." data-i18n-ar="استخدم حساسات دوران العجلات لعدّ دوراتها، ثم قارن المسافة التي طلبها البرنامج بالمسافة التي قطعها الروبوت فعلًا.">Measure wheel rotations with encoders and compare commanded movement with actual distance.</li>
+        <li data-i18n-en="Write down each test: how far away the obstacle was, what the robot did, and whether it avoided touching it." data-i18n-ar="سجّلوا كل تجربة: بُعد العائق، وما فعله الروبوت، وهل تجنب لمسه أم لا.">Record test results: obstacle distance, chosen action, and whether the robot avoided contact.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+<script type="module" src="/robot-scene.js"></script>
+<script>
+const W=640,H=420,cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const track=document.createElement('canvas');track.width=W;track.height=H;const tx=track.getContext('2d',{willReadFrequently:true});
+let RECTS=[[170,100,40,110],[330,250,120,35],[470,90,40,100],[220,320,40,60]];
+function obstacleAvoidanceCode(threshold=22){
+  return `// Reverse away, turn, then continue when the path is clear
+const distance = robot.distance();
+
+if (state.escapeTicks > 0) {
+  state.escapeTicks--;
+  if (state.escapeTicks > 24) {
+    robot.drive(-0.55, -0.55);
+  } else if (state.turnDirection === 'left') {
+    robot.drive(-0.55, 0.55);
+  } else {
+    robot.drive(0.55, -0.55);
+  }
+} else if (distance < ${threshold}) {
+  state.escapeTicks = 42;
+  state.turnDirection = state.turnDirection === 'left' ? 'right' : 'left';
+  robot.drive(-0.55, -0.55);
+} else {
+  robot.drive(0.7, 0.7);
+}`;
+}
+function giftMissionCode(){
+  return `// Follow the planned safe route to the gift
+const heading = robot.giftBearing();
+const obstacle = robot.distance();
+
+if (obstacle < 12) {
+  robot.drive(-0.45, -0.45); // back away if something is too close
+} else if (Math.abs(heading) > 0.22) {
+  if (heading > 0) robot.drive(0.45, -0.45); // turn right
+  else robot.drive(-0.45, 0.45);             // turn left
+} else {
+  robot.drive(0.55, 0.55); // follow the route toward the gift
+}`;
+}
+const CODE={
+obstacle:obstacleAvoidanceCode(),
+gift:giftMissionCode(),
+line:`// Line following
+const L = robot.lineLeft();
+const R = robot.lineRight();
+
+if (L && R) {
+  robot.drive(0.7, 0.7);
+  state.last = 'S';
+} else if (L) {
+  robot.drive(0.1, 0.7);    // line on the left: turn left
+  state.last = 'L';
+} else if (R) {
+  robot.drive(0.7, 0.1);    // line on the right: turn right
+  state.last = 'R';
+} else {
+  // lost the line: search where we last saw it
+  if (state.last === 'L') robot.drive(-0.3, 0.4);
+  else robot.drive(0.4, -0.3);
+}`};
+let mode='obstacle',bot,running=false,state={},fn=null,last=0,cfg={spd:1,noi:0,slp:0},trail=true,elapsed=0,pts=[],giftTarget={x:570,y:350},giftPath=[],giftPathIndex=0,giftComplete=false,language='en';
+const nz=v=>Math.random()<cfg.noi/200?!v:v;
+function setup(){
+  tx.fillStyle='#fff';tx.fillRect(0,0,W,H);
+  giftComplete=false;
+  if(document.getElementById('gift-message').open)document.getElementById('gift-message').close();
+  if(mode==='line'){tx.strokeStyle='#111';tx.lineWidth=18;tx.lineJoin='round';tx.beginPath();tx.ellipse(320,210,240,130,0,0,7);tx.stroke();bot={x:320,y:80,a:0}}
+  else bot={x:60,y:60,a:0.6};
+  bot.l=0;bot.r=0;bot.v=0;state={};elapsed=0;pts=[];
+  giftPath=mode==='gift'?findGiftPath():[];giftPathIndex=0;draw();
+}
+function hit(x,y){
+  if(x<0||y<0||x>W||y>H)return true;
+  if(mode!=='line')for(const[a,b,w,h]of RECTS)if(x>=a&&x<=a+w&&y>=b&&y<=b+h)return true;
+  return false;
+}
+function circleHit(x,y,r){
+  if(x<r||y<r||x>W-r||y>H-r)return true;
+  if(mode!=='line')for(const[a,b,w,h]of RECTS){const cx=Math.max(a,Math.min(x,a+w)),cy=Math.max(b,Math.min(y,b+h));if((x-cx)**2+(y-cy)**2<r*r)return true}
+  return false;
+}
+function findGiftPath(){
+  const spacing=20,cols=32,rows=21,toCell=(x,y)=>({x:Math.max(0,Math.min(cols-1,Math.round((x-20)/spacing))),y:Math.max(0,Math.min(rows-1,Math.round((y-20)/spacing)))});
+  const toPoint=(x,y)=>({x:20+x*spacing,y:20+y*spacing});
+  const start=toCell(bot.x,bot.y),goal=toCell(giftTarget.x,giftTarget.y),key=(x,y)=>`${x},${y}`;
+  const open=[start],cameFrom=new Map(),cost=new Map([[key(start.x,start.y),0]]),closed=new Set();
+  const directions=[[1,0],[-1,0],[0,1],[0,-1]];
+  while(open.length){
+    open.sort((a,b)=>(cost.get(key(a.x,a.y))+Math.abs(a.x-goal.x)+Math.abs(a.y-goal.y))-(cost.get(key(b.x,b.y))+Math.abs(b.x-goal.x)+Math.abs(b.y-goal.y)));
+    const current=open.shift(),currentKey=key(current.x,current.y);
+    if(current.x===goal.x&&current.y===goal.y){
+      const path=[current];
+      let cursor=currentKey;
+      while(cameFrom.has(cursor)){const parent=cameFrom.get(cursor);path.push(parent);cursor=key(parent.x,parent.y)}
+      return path.reverse().slice(1).map(cell=>toPoint(cell.x,cell.y));
+    }
+    if(closed.has(currentKey))continue;
+    closed.add(currentKey);
+    for(const[dx,dy]of directions){
+      const next={x:current.x+dx,y:current.y+dy},nextKey=key(next.x,next.y);
+      if(next.x<0||next.y<0||next.x>=cols||next.y>=rows||closed.has(nextKey))continue;
+      const point=toPoint(next.x,next.y);
+      if(circleHit(point.x,point.y,24))continue;
+      const nextCost=cost.get(currentKey)+1;
+      if(nextCost<(cost.get(nextKey)??Infinity)){cost.set(nextKey,nextCost);cameFrom.set(nextKey,current);open.push(next)}
+    }
+  }
+  return [];
+}
+function giftBearing(){
+  while(giftPathIndex<giftPath.length&&Math.hypot(giftPath[giftPathIndex].x-bot.x,giftPath[giftPathIndex].y-bot.y)<15)giftPathIndex++;
+  const target=giftPath[giftPathIndex]||giftTarget;
+  const desired=Math.atan2(target.y-bot.y,target.x-bot.x);
+  return Math.atan2(Math.sin(desired-bot.a),Math.cos(desired-bot.a));
+}
+function drawGift(){
+  const {x,y}=giftTarget;
+  ctx.save();ctx.translate(x,y);
+  ctx.beginPath();ctx.arc(0,0,27,0,Math.PI*2);ctx.fillStyle='rgba(250,204,21,.2)';ctx.fill();
+  ctx.fillStyle='#ec4899';ctx.fillRect(-16,-13,32,28);
+  ctx.fillStyle='#f9a8d4';ctx.fillRect(-19,-18,38,9);
+  ctx.fillStyle='#facc15';ctx.fillRect(-3,-18,6,33);ctx.fillRect(-16,-3,32,5);
+  ctx.beginPath();ctx.ellipse(-6,-21,6,4,-.4,0,Math.PI*2);ctx.ellipse(6,-21,6,4,.4,0,Math.PI*2);ctx.fillStyle='#facc15';ctx.fill();
+  ctx.restore();
+}
+function dist(){
+  const c=Math.cos(bot.a),s=Math.sin(bot.a);
+  for(let d=18;d<=200;d+=2)if(hit(bot.x+c*d,bot.y+s*d))return (d-18)/2;
+  return 100;
+}
+function sensorPos(side){
+  const c=Math.cos(bot.a),s=Math.sin(bot.a);
+  return [bot.x+c*16+side*s*8,bot.y+s*16-side*c*8];
+}
+function line(side){
+  if(mode!=='line')return false;
+  const[x,y]=sensorPos(side),p=tx.getImageData(Math.round(x),Math.round(y),1,1).data;
+  return p[0]<100;
+}
+const robot={
+  drive(l,r){bot.l=Math.max(-1,Math.min(1,+l||0));bot.r=Math.max(-1,Math.min(1,+r||0))},
+  distance:()=>Math.max(0,dist()+(Math.random()-.5)*cfg.noi*2),lineLeft:()=>nz(line(1)),lineRight:()=>nz(line(-1)),
+  giftBearing:()=>giftBearing(),giftDistance:()=>Math.hypot(giftTarget.x-bot.x,giftTarget.y-bot.y)
+};
+function compile(){
+  try{fn=new Function('robot','state',document.getElementById('code').value);document.getElementById('err').textContent=''}
+  catch(e){fn=null;document.getElementById('err').textContent='Syntax error: '+e.message}
+}
+function step(dt){
+  if(fn){try{fn(robot,state)}catch(e){document.getElementById('err').textContent='Error: '+e.message;running=false;sync()}}
+  const V=110*cfg.spd,T=40,tv=(bot.l+bot.r)/2*V,w=(bot.l-bot.r)*V/T;bot.v=(bot.v||0)*cfg.slp+tv*(1-cfg.slp);const v=bot.v;
+  bot.a+=w*dt;
+  const nx=bot.x+Math.cos(bot.a)*v*dt,ny=bot.y+Math.sin(bot.a)*v*dt;
+  if(!circleHit(nx,ny,23)){bot.x=nx;bot.y=ny}
+  if(mode==='gift'&&!giftComplete&&robot.giftDistance()<27){giftComplete=true;running=false;bot.l=0;bot.r=0;document.getElementById('gift-message').showModal();sync()}
+  elapsed+=dt;if(trail&&(!pts.length||Math.hypot(pts[pts.length-1][0]-bot.x,pts[pts.length-1][1]-bot.y)>4)){pts.push([bot.x,bot.y]);if(pts.length>600)pts.shift()}
+}
+function draw(){
+  if(window.robotScene3D){
+    window.robotScene3D.render({
+      mode,obstacles:RECTS,bot,sensorDistance:dist()*2,trail,trailPoints:pts,
+      giftTarget,leftOnLine:line(1),rightOnLine:line(-1)
+    });
+    document.getElementById('st').textContent=mode==='line'?`L:${+line(1)} R:${+line(-1)}`:mode==='gift'?`${language==='ar'?'الهدية':'gift'}: ${robot.giftDistance().toFixed(0)} px · ${language==='ar'?'العائق':'obstacle'}: ${dist().toFixed(0)} cm`:`${language==='ar'?'المسافة':'distance'}: ${dist().toFixed(0)} cm`;
+    return;
+  }
+  ctx.drawImage(track,0,0);
+  if(mode!=='line'){ctx.fillStyle='#64748b';for(const[a,b,w,h]of RECTS)ctx.fillRect(a,b,w,h);
+    const d=dist(),c=Math.cos(bot.a),s=Math.sin(bot.a);ctx.strokeStyle='rgba(229,72,77,.5)';ctx.beginPath();ctx.moveTo(bot.x+c*18,bot.y+s*18);ctx.lineTo(bot.x+c*(18+d*2),bot.y+s*(18+d*2));ctx.stroke()}
+  if(mode==='gift')drawGift();
+  if(trail&&pts.length>1){ctx.strokeStyle='rgba(37,99,235,.45)';ctx.lineWidth=2;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke()}
+  ctx.strokeStyle='#334155';ctx.lineWidth=3;ctx.strokeRect(0,0,W,H);
+  ctx.save();ctx.translate(bot.x,bot.y);ctx.rotate(bot.a);
+  ctx.fillStyle='#2563eb';ctx.fillRect(-14,-14,28,28);
+  ctx.fillStyle='#fbbf24';ctx.fillRect(8,-14,6,28);
+  ctx.fillStyle='#111';ctx.fillRect(-12,-18,24,5);ctx.fillRect(-12,13,24,5);
+  ctx.restore();
+  if(mode==='line')for(const sd of[1,-1]){const[x,y]=sensorPos(sd);ctx.fillStyle=line(sd)?'#22c55e':'#ef4444';ctx.beginPath();ctx.arc(x,y,3.5,0,7);ctx.fill()}
+  document.getElementById('st').textContent=mode==='line'?`L:${+line(1)} R:${+line(-1)}`:mode==='gift'?`${language==='ar'?'الهدية':'gift'}: ${robot.giftDistance().toFixed(0)} px · ${language==='ar'?'العائق':'obstacle'}: ${dist().toFixed(0)} cm`:`${language==='ar'?'المسافة':'distance'}: ${dist().toFixed(0)} cm`;
+}
+function loop(t){
+  const dt=Math.min(.05,(t-last)/1000||0);last=t;
+  if(running)step(dt);document.getElementById('tm').textContent='⏱ '+elapsed.toFixed(1)+' s';
+  draw();requestAnimationFrame(loop);
+}
+function sync(){document.getElementById('run').textContent=language==='ar'?(running?'⏸ توقّف':'▶ ابدأ'):(running?'⏸ Pause':'▶ Run')}
+function setDrive(left,right,duration=180){
+  if(!bot)return;
+  bot.l=left;
+  bot.r=right;
+  setTimeout(()=>{bot.l=0;bot.r=0;},duration);
+}
+function turnRobot(dir){
+  if(!bot)return;
+  const angle=dir==='left'?-0.8:0.8;
+  bot.a+=angle;
+  setDrive(dir==='left'?-0.7:0.7, dir==='left'?0.7:-0.7, 180);
+}
+document.getElementById('run').onclick=()=>{if(!running)compile();running=!running&&!!fn;sync()};
+document.getElementById('reset').onclick=()=>{running=false;sync();setup()};
+document.getElementById('forward').onclick=()=>setDrive(0.8,0.8,180);
+document.getElementById('backward').onclick=()=>setDrive(-0.8,-0.8,180);
+document.getElementById('turn-left').onclick=()=>turnRobot('left');
+document.getElementById('turn-right').onclick=()=>turnRobot('right');
+document.getElementById('mode').onchange=e=>{mode=e.target.value;running=false;sync();document.getElementById('code').value=CODE[mode];$('gift-hint').hidden=mode!=='gift';$('sensor-hint').hidden=mode==='gift';setup()};
+document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const t=e.target,s=t.selectionStart;t.value=t.value.slice(0,s)+'  '+t.value.slice(t.selectionEnd);t.selectionStart=t.selectionEnd=s+2}});
+const $=id=>document.getElementById(id);
+const simView=$('sim-view'),learnView=$('learn-view'),sessionView=$('session-view');
+function showView(name){
+  const views={sim:simView,learn:learnView,session:sessionView,project:$('project-view')};
+  for(const [viewName,element] of Object.entries(views)){
+    element.classList.toggle('hidden',viewName!==name);
+    const navName=viewName==='project'?'project':viewName==='session'?'learn':viewName;
+    $('show-'+navName).classList.toggle('p',navName===(name==='session'?'learn':name));
+  }
+}
+function clearSessionHash(){
+  if(location.hash.startsWith('#session-'))history.replaceState(null,'',location.pathname+location.search);
+}
+$('show-sim').onclick=()=>{clearSessionHash();showView('sim')};
+$('show-learn').onclick=()=>{clearSessionHash();showView('learn')};
+$('show-project').onclick=()=>{clearSessionHash();showView('project')};
+$('gift-close').onclick=()=>$('gift-message').close();
+const lessonPrograms=[
+  {mode:'obstacle',code:obstacleAvoidanceCode(20)},
+  {mode:'obstacle',code:obstacleAvoidanceCode(18)},
+  {mode:'line',code:`// Lesson 3: Read both line sensors\nconst left = robot.lineLeft();\nconst right = robot.lineRight();\nif (left && right) robot.drive(0.5, 0.5);\nelse if (left) robot.drive(0.1, 0.6);\nelse if (right) robot.drive(0.6, 0.1);\nelse robot.drive(0, 0);`},
+  {mode:'obstacle',code:`// Lesson 4: Compare left and right wheel power\nrobot.drive(0.8, 0.35); // curve right\n// Try robot.drive(0.35, 0.8) to curve left`},
+  {mode:'obstacle',code:`// Lesson 5: Move forward at a steady speed\nrobot.drive(0.55, 0.55);`},
+  {mode:'obstacle',code:obstacleAvoidanceCode(18)},
+  {mode:'obstacle',code:obstacleAvoidanceCode(15)},
+  {mode:'line',code:`// Lesson 8: Follow the black line\nconst left = robot.lineLeft();\nconst right = robot.lineRight();\nif (left && right) robot.drive(0.65, 0.65);\nelse if (left) robot.drive(0.15, 0.65);\nelse if (right) robot.drive(0.65, 0.15);\nelse robot.drive(0.35, -0.35); // search`},
+  {mode:'obstacle',code:obstacleAvoidanceCode(22)},
+  {mode:'obstacle',code:obstacleAvoidanceCode(18)},
+  {mode:'obstacle',code:obstacleAvoidanceCode(25)},
+  {mode:'line',code:`// Lesson 12: Feedback line follower with memory\nconst left = robot.lineLeft();\nconst right = robot.lineRight();\nif (left && right) {\n  state.last = 'straight';\n  robot.drive(0.65, 0.65);\n} else if (left) {\n  state.last = 'left';\n  robot.drive(0.2, 0.7);\n} else if (right) {\n  state.last = 'right';\n  robot.drive(0.7, 0.2);\n} else if (state.last === 'left') {\n  robot.drive(-0.2, 0.5);\n} else {\n  robot.drive(0.5, -0.2);\n}`}
+];
+const lessonCards=[...document.querySelectorAll('.lesson')];
+const lessonNotes=[
+  {
+    story:'A robot is a helper machine that follows instructions. It can notice something, choose a rule, and then move or make a sound. It does not think like a person, so people decide what rules it should follow.',
+    idea:'Every robot senses information, follows a rule, and does an action.',
+    ask:'If our robot notices a toy in front of it, what are two safe things we could teach it to do?',
+    challenge:'Play “Robot and Programmer.” One person gives a robot three clear actions: look, choose, move. Swap roles and add a pretend obstacle.',
+    check:'Can you name the robot’s three jobs: notice, choose, and do?',
+    answer:'A robot senses information, follows instructions to make a choice, and acts using parts such as wheels or lights.',
+    photo:'photo-1485827404703-89b55fcc595e'
+  },
+  {
+    story:'Robots check what is happening, choose what to do, and try again. It is like asking “Is the path clear?” again and again while you walk through a room.',
+    idea:'Sense → decide → move → repeat!',
+    ask:'Why is it helpful for a robot to check the path more than once instead of only at the start?',
+    challenge:'Clap a rhythm: “check, choose, move.” Pretend the robot sees a cushion; change the move to “back up,” then start the rhythm again.',
+    check:'What three steps repeat in a robot’s control loop?',
+    answer:'The robot measures or senses, decides what its rules say, and moves. Then it repeats the loop.',
+    photo:'photo-1535378620166-273708d44e4c'
+  },
+  {
+    story:'Sensors are a robot’s special senses. A distance sensor can measure how near an object is. A line sensor can notice a dark path. Sensors give numbers or yes/no clues—not human thoughts.',
+    idea:'Sensors give clues; the program uses them to choose what to do.',
+    ask:'What could a robot use to notice a wall? What could it use to follow a dark line?',
+    challenge:'Show the robot a book or a soft toy. Look at its distance reading in the simulator and describe how the number changes as the object moves.',
+    check:'Do sensors make a decision, or do they give clues to the robot’s program?',
+    answer:'Sensors give clues or measurements. The program uses those clues to choose an action.',
+    photo:'photo-1518770660439-4636190af475'
+  },
+  {
+    story:'Motors are like a robot’s muscles: they help the wheels turn. When both wheels push forward together, the robot rolls straight. When one wheel moves differently, the robot curves or turns.',
+    idea:'Changing the left and right wheel speeds changes the robot’s direction.',
+    ask:'What do you think happens if the left wheel moves quickly but the right wheel moves slowly?',
+    challenge:'Use the Forward, Left, and Right buttons in the simulator. Predict the direction first, then test your prediction.',
+    check:'What makes a two-wheeled robot turn: changing its sensors or changing its wheel speeds?',
+    answer:'Changing the left and right wheel speeds makes a two-wheeled robot curve or turn.',
+    photo:'photo-1581092921461-eab62e97a780'
+  },
+  {
+    story:'To move straight, a two-wheeled robot can ask both wheels to move forward at about the same speed. Smaller speed numbers mean a gentler, slower drive.',
+    idea:'Two wheels moving forward at similar speeds help the robot go straight.',
+    ask:'Why might a slow robot be easier to control than a very fast robot?',
+    challenge:'In the simulator, compare a slow forward command with a faster one. Tell a partner what changed and what stayed the same.',
+    check:'For a straight path, should the left and right wheels move in the same direction or opposite directions?',
+    answer:'They should move in the same direction at similar speeds.',
+    photo:'photo-1473968512647-3e447244af8f'
+  },
+  {
+    story:'An obstacle is something in the robot’s way. A helpful robot can notice that something is close, back up to make space, turn, and then try a new path.',
+    idea:'Notice the obstacle, make space, turn, and try again.',
+    ask:'Why might backing up before turning help a robot that is close to a wall?',
+    challenge:'Choose Gift mission or Obstacle arena. Watch the sensor reading and describe each part of the robot’s escape: notice, back up, turn.',
+    check:'What should the robot do first if it is too close to an obstacle?',
+    answer:'It should stop moving forward and back up to make room before turning away.',
+    photo:'photo-1563207153-f403bf289096'
+  },
+  {
+    story:'A condition is a question with a yes-or-no answer. “If the path is blocked, turn. Otherwise, keep going.” The computer checks the question and follows the matching instruction.',
+    idea:'IF the rule is true, do one thing; ELSE, do another.',
+    ask:'Can you make an “if … then …” rule for crossing a road with a grown-up?',
+    challenge:'Finish this rule together: “If the robot sees a close obstacle, it should ___; otherwise, it should ___.”',
+    check:'In “if it is raining, take an umbrella; else, take a hat,” what does “else” mean?',
+    answer:'“Else” means what to do when the “if” condition is not true.',
+    photo:'photo-1550751827-4bd374c3f58b'
+  },
+  {
+    story:'A line-following robot looks down at a track with sensors. If the line moves to one side, the robot changes its wheel speeds to steer back toward it—like gently guiding a toy car along a path.',
+    idea:'Check where the line is, steer toward it, and check again.',
+    ask:'If the robot’s left sensor sees the line but the right sensor does not, which way might the robot need to steer?',
+    challenge:'Select Line track in the simulator. Watch the little sensor dots and try to explain why the robot turns when one sees the line.',
+    check:'What is the robot following: a sound, a color or brightness change, or a smell?',
+    answer:'It follows a change in brightness, such as a dark line against a light floor.',
+    photo:'photo-1558618666-fcd25c85cd64'
+  },
+  {
+    story:'A robot can keep a tiny note for later. For example, it can remember which way it last saw a line. If the line disappears, that note can help the robot search in the right direction.',
+    idea:'A small memory can help a robot choose its next move.',
+    ask:'What is one helpful thing a robot might remember during a game or journey?',
+    challenge:'Be a robot with a memory: point left when you see a pretend line, close your eyes, and remember which way to search.',
+    check:'Why might a robot need memory if it already has sensors?',
+    answer:'A sensor tells the robot what is happening now. Memory can help it use something it noticed a moment ago.',
+    photo:'photo-1519389950473-47ba0277781c'
+  },
+  {
+    story:'A robot may have several jobs at once: follow a line, avoid a bump, and keep moving. It needs an order for its rules. Keeping people and the robot safe should come before ordinary driving.',
+    idea:'Put safety rules before ordinary movement.',
+    ask:'If a robot is following a line but suddenly sees a person in its way, which job should come first?',
+    challenge:'Act out two rules: “stay on the path” and “stop if someone is in the way.” Decide together which rule should have the highest priority.',
+    check:'Which should usually come first: avoiding a collision or moving forward quickly?',
+    answer:'Avoiding a collision comes first. Safety rules should have higher priority than ordinary movement.',
+    photo:'photo-1535223289827-42f1e9919769'
+  },
+  {
+    story:'Debugging means being a robot detective. Notice what the robot did, look at the clues from its sensors, change one small thing, and test again.',
+    idea:'Observe, change one thing, and test again.',
+    ask:'If the robot turns too late, what could we check before changing the program?',
+    challenge:'Pick one simulator setting or code number to change. Guess what will happen, test it, and tell a partner what you learned.',
+    check:'Why is it useful to change just one thing at a time?',
+    answer:'Then you can tell which change caused the robot’s behavior to improve or change.',
+    photo:'photo-1581092160562-40aa08e78837'
+  },
+  {
+    story:'Feedback is how a robot checks whether it is doing what we wanted and makes a small correction. It is like steering a bicycle: look where you are going, notice a drift, and gently adjust.',
+    idea:'Use new sensor clues to make a gentle correction.',
+    ask:'When you draw along a winding path, how do your eyes and hands work together to keep you near the line?',
+    challenge:'Run the line-following example. Try a small wheel-speed change and see whether the robot follows the path more smoothly.',
+    check:'What does a robot use as feedback to decide whether it needs to correct its movement?',
+    answer:'It uses new sensor readings to compare what is happening with what it wants to happen.',
+    photo:'photo-1581091226825-a6a2a5aee158'
+  }
+];
+const lessonArabic=[
+  {
+    title:'ما الروبوت؟',summary:'الروبوت آلة تساعدنا. تتبع التعليمات وتتحرك بعجلاتها أو تصدر صوتًا.',
+    story:'الروبوت آلة تساعدنا وتتبع التعليمات. يلاحظ شيئًا، ثم يختار ما يفعل، ثم يتحرك أو يصدر صوتًا. الروبوت لا يفكر مثل الإنسان؛ نحن نعلّمه القواعد.',
+    idea:'الروبوت يلاحظ، ثم يختار، ثم يفعل.',
+    ask:'إذا رأى الروبوت لعبة أمامه، ماذا نعلّمه أن يفعل؟',
+    challenge:'العبوا لعبة «الروبوت والمبرمج». أعطوا الروبوت ثلاث تعليمات سهلة: انظر، اختر، تحرّك. ثم بدّلوا الأدوار.',
+    check:'ما الأشياء الثلاثة التي يفعلها الروبوت؟',
+    answer:'يلاحظ الروبوت ما حوله، ويتبع قاعدة، ثم يتحرك أو يفعل شيئًا.',
+    level:'مبتدئ'
+  },
+  {
+    title:'كيف يفكر الروبوت؟',summary:'الروبوت يلاحظ، ويختار، ويتحرك. ثم يكرر ذلك مرة أخرى.',
+    story:'الروبوت يلاحظ ما حوله، ويختار ما يفعل، ثم يحاول مرة أخرى. مثل أن تسأل نفسك: «هل الطريق خالٍ؟» وأنت تمشي.',
+    idea:'لاحظ ← اختر ← تحرّك ← أعد من جديد!',
+    ask:'لماذا يحتاج الروبوت إلى فحص الطريق أكثر من مرة؟',
+    challenge:'صفّقوا معًا وقولوا: «لاحظ، اختر، تحرّك». تخيّلوا أن أمام الروبوت وسادة؛ اجعلوه يرجع إلى الخلف ثم يعيد المحاولة.',
+    check:'ما الخطوات التي يكررها الروبوت؟',
+    answer:'يلاحظ الروبوت، ثم يختار، ثم يتحرك. وبعدها يبدأ من جديد.',
+    level:'مبتدئ'
+  },
+  {
+    title:'حواس الروبوت',summary:'الحساسات تساعد الروبوت على معرفة ما حوله، مثل قرب الحائط أو وجود خط.',
+    story:'الحساسات مثل حواس الروبوت. يستطيع حساس المسافة أن يعرف إن كان الشيء قريبًا. ويستطيع حساس الخط أن يرى خطًا داكنًا. الحساس يعطي معلومة، ولا يفكر وحده.',
+    idea:'الحساس يعطي الروبوت معلومة.',
+    ask:'كيف يعرف الروبوت أن الحائط قريب؟ وكيف يجد الخط الداكن؟',
+    challenge:'قرّبوا لعبة من الروبوت في المحاكي ثم أبعدوها. راقبوا رقم المسافة: هل يكبر أم يصغر؟',
+    check:'هل يختار الحساس ما يفعله الروبوت؟',
+    answer:'لا. الحساس يعطي معلومة، والبرنامج يختار ماذا يفعل.',
+    level:'مبتدئ'
+  },
+  {
+    title:'المحرّكات مثل العضلات',summary:'المحرّكات تدير العجلات. اختلاف سرعة العجلتين يجعل الروبوت ينعطف.',
+    story:'المحرّكات مثل عضلات الروبوت؛ فهي تدير العجلات. إذا تحركت العجلتان معًا، يسير الروبوت إلى الأمام. وإذا اختلفت سرعتهما، ينعطف.',
+    idea:'العجلتان تساعدان الروبوت على السير والانعطاف.',
+    ask:'ماذا يحدث إذا تحركت العجلة اليسرى أسرع من اليمنى؟',
+    challenge:'استخدموا أزرار الأمام واليمين واليسار في المحاكي. خمنوا الاتجاه أولًا، ثم جرّبوا.',
+    check:'كيف ينعطف الروبوت ذو العجلتين؟',
+    answer:'يغيّر سرعة العجلة اليمنى أو اليسرى.',
+    level:'مبتدئ'
+  },
+  {
+    title:'السير إلى الأمام',summary:'عندما تدور العجلتان إلى الأمام بالسرعة نفسها، يسير الروبوت بشكل مستقيم.',
+    story:'كي يسير الروبوت إلى الأمام بشكل مستقيم، تتحرك العجلتان إلى الأمام بسرعة متقاربة. والسرعة البطيئة تجعل التحكم أسهل.',
+    idea:'عجلتان تسيران معًا تساعدان الروبوت على السير مستقيمًا.',
+    ask:'لماذا يكون التحكم بالروبوت البطيء أسهل؟',
+    challenge:'جرّبوا السرعة البطيئة ثم السريعة في المحاكي. ماذا تغيّر؟',
+    check:'كي يسير الروبوت مستقيمًا، هل تدور العجلتان إلى الاتجاه نفسه؟',
+    answer:'نعم، تدور العجلتان إلى الأمام بسرعة متقاربة.',
+    level:'مبتدئ'
+  },
+  {
+    title:'تجنّب العوائق',summary:'إذا وجد الروبوت شيئًا أمامه، يرجع قليلًا ثم ينعطف إلى طريق آخر.',
+    story:'العائق شيء يقف في طريق الروبوت. إذا وجد الروبوت شيئًا قريبًا، يمكنه أن يرجع قليلًا، ثم ينعطف، ثم يجرب طريقًا جديدًا.',
+    idea:'لاحظ العائق، ارجع، انعطف، ثم جرّب من جديد.',
+    ask:'لماذا يرجع الروبوت إلى الخلف قبل أن ينعطف؟',
+    challenge:'اختاروا ساحة العوائق في المحاكي. راقبوا الروبوت: متى يرجع؟ ومتى ينعطف؟',
+    check:'ماذا يفعل الروبوت أولًا عندما يقترب من عائق؟',
+    answer:'يتوقف عن السير إلى الأمام ويرجع قليلًا ليبتعد عن العائق.',
+    level:'مبتدئ'
+  },
+  {
+    title:'إذا حدث هذا…',summary:'نعلّم الروبوت قاعدة: إذا رأى شيئًا قريبًا، ينعطف. وإلا، يكمل طريقه.',
+    story:'الشرط سؤال إجابته نعم أو لا. نقول: «إذا كان الطريق مغلقًا، انعطف. وإلا، أكمل السير». يتبع الكمبيوتر القاعدة المناسبة.',
+    idea:'إذا حدث شيء، افعل هذا. وإلا، افعل شيئًا آخر.',
+    ask:'أكملوا القاعدة: «إذا كان الجو ممطرًا، نأخذ …»',
+    challenge:'قولوا معًا: «إذا رأى الروبوت عائقًا قريبًا، يرجع. وإلا، يسير إلى الأمام».',
+    check:'ماذا تعني كلمة «وإلا»؟',
+    answer:'«وإلا» تعني: إذا لم يحدث الأمر الأول، افعل الأمر الثاني.',
+    level:'متوسط'
+  },
+  {
+    title:'اتباع الخط',summary:'يرى الروبوت الخط على الأرض ويحرّك عجلاته ليتبعه.',
+    story:'يرى الروبوت خطًا على الأرض بحساساته. إذا ابتعد عن الخط، يغيّر سرعة العجلات ليعود إليه، مثل سيارة لعبة تتبع طريقًا.',
+    idea:'ابحث عن الخط، انعطف نحوه، ثم افحصه مرة أخرى.',
+    ask:'إذا رأى الحساس الأيسر الخط، إلى أي جهة ينعطف الروبوت؟',
+    challenge:'اختاروا مسار الخط في المحاكي. راقبوا نقطتي الحساس وشاهدوا كيف يتبع الروبوت الخط.',
+    check:'ماذا يتبع الروبوت: صوتًا أم خطًا داكنًا؟',
+    answer:'يتبع خطًا داكنًا على الأرض.',
+    level:'متوسط'
+  },
+  {
+    title:'ذاكرة الروبوت',summary:'يمكن للروبوت أن يتذكر ما رآه قبل قليل ليساعده في حركته التالية.',
+    story:'يستطيع الروبوت أن يحتفظ بمعلومة صغيرة. مثلًا، يتذكر أين رأى الخط آخر مرة. إذا اختفى الخط، يبحث في الجهة نفسها.',
+    idea:'الذاكرة تساعد الروبوت على اختيار حركته التالية.',
+    ask:'ما الشيء الذي قد يحتاج الروبوت إلى تذكّره؟',
+    challenge:'مثّلوا دور الروبوت: عندما ترون خطًا، أشيروا إلى جهته. ثم أغمضوا أعينكم وتذكروا أين تبحثون.',
+    check:'لماذا قد يحتاج الروبوت إلى ذاكرة؟',
+    answer:'الحساس يخبر الروبوت بما يراه الآن. والذاكرة تساعده على تذكّر ما رآه قبل قليل.',
+    level:'متوسط'
+  },
+  {
+    title:'أكثر من قاعدة',summary:'يمكن للروبوت أن يتبع خطًا ويتجنب العوائق. عليه أن يعرف أي قاعدة أهم.',
+    story:'قد يكون للروبوت أكثر من عمل: يتبع الخط، ويتجنب العوائق، ويتحرك. يجب أن يتبع القواعد بترتيب. الأمان يأتي أولًا.',
+    idea:'الأمان أهم من السير بسرعة.',
+    ask:'إذا رأى الروبوت شخصًا أمامه وهو يتبع الخط، ماذا يفعل؟',
+    challenge:'مثّلوا القاعدتين: «اتبع الخط» و«قف إذا كان شخص أمامك». أيهما أهم؟',
+    check:'أيهما أهم: تجنّب الاصطدام أم السير بسرعة؟',
+    answer:'تجنّب الاصطدام أهم. يجب أن تأتي قواعد الأمان أولًا.',
+    level:'متقدم'
+  },
+  {
+    title:'البحث عن الخطأ',summary:'إذا لم يتحرك الروبوت كما نريد، نلاحظ ما حدث ونغيّر شيئًا واحدًا.',
+    story:'البحث عن الخطأ يشبه عمل المحقق. نلاحظ ما فعله الروبوت، ونفحص ما رآه، ثم نغيّر شيئًا صغيرًا ونجرب مرة أخرى.',
+    idea:'لاحظ، غيّر شيئًا واحدًا، ثم جرّب من جديد.',
+    ask:'إذا انعطف الروبوت متأخرًا، ماذا نفحص أولًا؟',
+    challenge:'غيّروا رقمًا واحدًا في المحاكي. خمنوا ما سيحدث، ثم جرّبوا.',
+    check:'لماذا نغيّر شيئًا واحدًا في كل مرة؟',
+    answer:'كي نعرف أي تغيير جعل حركة الروبوت أفضل.',
+    level:'متقدم'
+  },
+  {
+    title:'التعلّم من الحساسات',summary:'يستخدم الروبوت معلومات الحساسات ليصحح طريقه بهدوء.',
+    story:'يفحص الروبوت طريقه، ويلاحظ إن كان قد ابتعد عن المسار، ثم يغيّر حركته قليلًا. مثل ركوب الدراجة: ننظر إلى الطريق ونوجّهها بلطف.',
+    idea:'معلومات الحساس تساعد الروبوت على تصحيح طريقه.',
+    ask:'كيف تساعدك عيناك ويداك على الرسم فوق خط متعرج؟',
+    challenge:'شغّلوا مثال اتباع الخط. غيّروا سرعة العجلات قليلًا وشاهدوا هل صار السير أسهل.',
+    check:'ما الذي يساعد الروبوت على تصحيح حركته؟',
+    answer:'يستخدم معلومات جديدة من الحساسات ليعرف إن كان يحتاج إلى تغيير طريقه.',
+    level:'متقدم'
+  }
+];
+const englishTitles=lessonCards.map(lesson=>lesson.querySelector('h3').textContent.trim());
+const englishLevels=lessonCards.map(lesson=>lesson.querySelector('.level').textContent.trim());
+const lessonDeep=[
+  {
+    en:{
+      explanation:'A robot is a machine that uses parts to do a job. A sensor is its way to notice something, the program is the set of instructions, and a motor is one way to act. The robot does not know what a wall means; it follows the rule that a person wrote.',
+      example:'A robot vacuum notices a wall with a sensor. Its rule may say, “If something is close, stop and turn.” Then its wheels move it in a new direction.',
+      code:'const distance = robot.distance();\nif (distance < 20) {\n  robot.drive(0, 0);\n} else {\n  robot.drive(0.5, 0.5);\n}',
+      steps:['<code>robot.distance()</code> asks the sensor how far away an obstacle is.', 'The <code>if</code> asks whether that distance is less than 20 cm.', 'If the obstacle is close, both motors stop. Otherwise, both wheels move forward slowly.']
+    },
+    ar:{
+      explanation:'الروبوت آلة تساعدنا على عمل شيء. الحساس يساعده على ملاحظة ما حوله، والبرنامج يعطيه التعليمات، والمحرّك يساعده على الحركة. الروبوت لا يعرف معنى الحائط؛ بل يتبع القاعدة التي نكتبها له.',
+      example:'مكنسة الروبوت تلاحظ الحائط بحساس. تقول لها القاعدة: «إذا كان الشيء قريبًا، توقف وانعطفي». ثم تحرّك عجلاتها إلى جهة أخرى.',
+      code:'const distance = robot.distance();\nif (distance < 20) {\n  robot.drive(0, 0);\n} else {\n  robot.drive(0.5, 0.5);\n}',
+      steps:['<code>robot.distance()</code> تسأل الحساس: كم يبعد العائق؟', 'يسأل <code>if</code>: هل المسافة أقل من 20؟', 'إذا كان العائق قريبًا، تتوقف العجلتان. وإلا، تسيران إلى الأمام ببطء.']
+    }
+  },
+  {
+    en:{
+      explanation:'A robot loop is a short list of steps that the robot repeats while it is running. It checks the world again after each move, because the world may have changed. This repeated check-and-act pattern is why the robot can react instead of only following one long, fixed path.',
+      example:'Imagine walking toward a chair. You look, take a step, then look again. If the chair moved, you can choose a new direction. A robot loop does the same kind of repeat.',
+      code:'const distance = robot.distance();\nif (distance < 20) {\n  robot.drive(-0.4, 0.4);\n} else {\n  robot.drive(0.5, 0.5);\n}',
+      steps:['Read the newest distance measurement at the start of the loop.', 'If the obstacle is closer than 20 cm, the wheels turn the robot.', 'If it is farther away, both wheels go forward. The program checks again on the next loop.']
+    },
+    ar:{
+      explanation:'حلقة الروبوت خطوات قصيرة يكررها كلما كان يعمل. بعد كل حركة، يفحص ما حوله مرة أخرى لأن الطريق قد يتغير. هكذا يستطيع الروبوت أن يتصرف عند ظهور شيء جديد.',
+      example:'تخيّل أنك تمشي نحو كرسي: تنظر، ثم تخطو، ثم تنظر من جديد. إذا ظهر شيء في طريقك، تختار طريقًا آخر. الروبوت يفعل شيئًا شبيهًا بهذا.',
+      code:'const distance = robot.distance();\nif (distance < 20) {\n  robot.drive(-0.4, 0.4);\n} else {\n  robot.drive(0.5, 0.5);\n}',
+      steps:['في بداية الحلقة، نقرأ المسافة الجديدة.', 'إذا كان العائق أقرب من 20، تدور العجلات كي ينعطف الروبوت.', 'إذا كان أبعد، تسير العجلتان إلى الأمام. ثم يفحص الروبوت الطريق مرة أخرى.']
+    }
+  },
+  {
+    en:{
+      explanation:'A sensor turns something in the world into information the program can use. The distance sensor gives a number, such as 35 cm. The line sensors give a yes-or-no answer: true means the sensor is over the dark line, and false means it is not.',
+      example:'A night-light can use a light sensor. When the room is dark, the sensor tells the program; the program turns the lamp on.',
+      code:'const distance = robot.distance();\nconst leftSeesLine = robot.lineLeft();\nif (leftSeesLine) {\n  robot.drive(0.2, 0.6);\n}',
+      steps:['Save the distance reading in a named variable so we can use it.', 'Ask the left line sensor whether it sees the line.', 'When the answer is true, use different wheel speeds to steer.']
+    },
+    ar:{
+      explanation:'الحساس يحوّل ما حول الروبوت إلى معلومة يفهمها البرنامج. حساس المسافة يعطي رقمًا مثل 35 سم. أما حساس الخط فيجيب بنعم أو لا: «نعم» تعني أنه فوق الخط الداكن.',
+      example:'يستخدم ضوء الليل حساسًا للضوء. عندما تصبح الغرفة مظلمة، يخبر الحساس البرنامج، فيشغّل البرنامج المصباح.',
+      code:'const distance = robot.distance();\nconst leftSeesLine = robot.lineLeft();\nif (leftSeesLine) {\n  robot.drive(0.2, 0.6);\n}',
+      steps:['نحفظ قراءة المسافة باسم واضح لنستخدمها.', 'نسأل الحساس الأيسر: هل ترى الخط؟', 'إذا كانت الإجابة نعم، نغيّر سرعة العجلتين كي ينعطف الروبوت.']
+    }
+  },
+  {
+    en:{
+      explanation:'Each wheel has its own motor. The first number in <code>robot.drive(left, right)</code> controls the left wheel; the second controls the right wheel. Equal positive numbers move forward, and unequal numbers make a curve. Negative numbers make a wheel turn backward.',
+      example:'Think of a shopping cart with two wheels. If both sides push equally, it rolls straight. If one side pushes harder, the cart turns.',
+      code:'robot.drive(0.7, 0.7);  // both wheels forward\nrobot.drive(0.2, 0.7);  // wheels move at different speeds',
+      steps:['<code>robot.drive</code> sends a speed to both motors.', 'The first number is left; the second number is right.', 'In the second command, the right wheel is faster, so the robot curves.']
+    },
+    ar:{
+      explanation:'لكل عجلة محرّك. الرقم الأول في <code>robot.drive(left, right)</code> يتحكم بالعجلة اليسرى، والثاني بالعجلة اليمنى. إذا تساوى الرقمان، يسير الروبوت إلى الأمام. وإذا اختلفا، ينعطف.',
+      example:'تخيّل عربة لها عجلتان. إذا دفعت الجهتين بالقوة نفسها، تسير مستقيمة. وإذا دفعت جهة أقوى، تنعطف العربة.',
+      code:'robot.drive(0.7, 0.7);  // العجلتان إلى الأمام\nrobot.drive(0.2, 0.7);  // سرعة العجلتين مختلفة',
+      steps:['يرسل <code>robot.drive</code> السرعة إلى المحرّكين.', 'الرقم الأول للعجلة اليسرى، والثاني لليمنى.', 'في الأمر الثاني، اليمنى أسرع، لذلك ينعطف الروبوت.']
+    }
+  },
+  {
+    en:{
+      explanation:'To travel straight, the robot needs both wheels to roll forward at similar speeds. A value like 0.3 is gentle; 0.8 is faster. The numbers are motor power, not a promise of an exact real-world speed.',
+      example:'When you push a toy car with both hands evenly, it rolls straight. If you push one side more, it turns.',
+      code:'robot.drive(0.3, 0.3);  // slow and straight\nrobot.drive(0.8, 0.8);  // faster and straight\nrobot.drive(0, 0);        // stop',
+      steps:['The two matching positive numbers move both wheels forward.', 'Larger values make the motors stronger in the simulator.', 'Two zeroes tell both motors to stop.']
+    },
+    ar:{
+      explanation:'كي يسير الروبوت مستقيمًا، تتحرك العجلتان إلى الأمام بسرعة متقاربة. الرقم 0.3 يعني حركة هادئة، و0.8 يعني حركة أسرع. هذه أرقام لقوة المحرّك وليست سرعة ثابتة.',
+      example:'عندما تدفع سيارة لعبة بيديك بالتساوي، تسير مستقيمة. وإذا دفعت جهة أكثر، تنعطف.',
+      code:'robot.drive(0.3, 0.3);  // سير بطيء ومستقيم\nrobot.drive(0.8, 0.8);  // سير أسرع ومستقيم\nrobot.drive(0, 0);        // توقف',
+      steps:['الرقمان الموجبان والمتساويان يحركان العجلتين إلى الأمام.', 'كلما كبر الرقم، زادت قوة المحرّك في المحاكي.', 'الصفران يعنيان أن العجلتين تتوقفان.']
+    }
+  },
+  {
+    en:{
+      explanation:'A distance sensor can warn the robot before its body reaches an obstacle. The program needs a safe distance: when the reading is smaller than that number, it chooses a new action. In a real robot, stopping first and backing up gives it room to turn.',
+      example:'A careful person slows down before reaching a closed door, then turns toward an open doorway. The robot needs a similar rule.',
+      code:'const distance = robot.distance();\nif (distance < 22) {\n  robot.drive(-0.5, -0.5); // back up\n} else {\n  robot.drive(0.5, 0.5);   // go forward\n}',
+      steps:['Measure how far away the obstacle is.', 'When the distance is under 22 cm, both negative speeds make the robot back up.', 'When the path is clearer, both positive speeds move it forward. A longer program can turn after backing up.']
+    },
+    ar:{
+      explanation:'يخبر حساس المسافة الروبوت بوجود عائق قبل أن يصطدم به. نختار مسافة آمنة. إذا صار العائق أقرب منها، نغيّر حركة الروبوت. الرجوع إلى الخلف يعطيه مساحة لينعطف.',
+      example:'عندما ترى بابًا مغلقًا، تبطئ ثم تتجه إلى باب مفتوح. نعلّم الروبوت قاعدة مشابهة.',
+      code:'const distance = robot.distance();\nif (distance < 22) {\n  robot.drive(-0.5, -0.5); // ارجع إلى الخلف\n} else {\n  robot.drive(0.5, 0.5);   // سر إلى الأمام\n}',
+      steps:['نقيس بُعد العائق.', 'إذا كانت المسافة أقل من 22، تجعل السرعتان السالبتان الروبوت يرجع.', 'إذا صار الطريق أبعد، تحركه السرعتان الموجبتان إلى الأمام. وبعدها يمكن أن ينعطف.']
+    }
+  },
+  {
+    en:{
+      explanation:'A condition is a question the computer can answer with true or false. <code>if</code> means “do this when the answer is true.” <code>else</code> means “otherwise, do this.” Put the more important choice first so it gets checked first.',
+      example:'If it is raining, take an umbrella; otherwise, wear a sun hat. The weather is the question, and each answer leads to a different action.',
+      code:'if (robot.distance() < 20) {\n  robot.drive(-0.4, 0.4); // turn away\n} else {\n  robot.drive(0.5, 0.5);  // keep going\n}',
+      steps:['The condition checks whether the obstacle is closer than 20 cm.', 'The braces after <code>if</code> contain the action for a close obstacle.', 'The braces after <code>else</code> contain the action when the obstacle is not close.']
+    },
+    ar:{
+      explanation:'الشرط سؤال يجيب عنه الكمبيوتر بنعم أو لا. تعني <code>if</code> «إذا كانت الإجابة نعم، افعل هذا». وتعني <code>else</code> «إذا لم تكن نعم، افعل هذا». نكتب القاعدة الأهم أولًا.',
+      example:'إذا كان الجو ممطرًا، خذ مظلة. وإلا، ارتدِ قبعة. حالة الجو هي السؤال، ولكل إجابة عمل مختلف.',
+      code:'if (robot.distance() < 20) {\n  robot.drive(-0.4, 0.4); // انعطف بعيدًا\n} else {\n  robot.drive(0.5, 0.5);  // أكمل السير\n}',
+      steps:['يفحص الشرط: هل العائق أقرب من 20 سم؟', 'الأوامر داخل أقواس <code>if</code> تعمل إذا كان العائق قريبًا.', 'الأوامر داخل أقواس <code>else</code> تعمل إذا لم يكن قريبًا.']
+    }
+  },
+  {
+    en:{
+      explanation:'A line-following robot has sensors underneath that check the floor. Each sensor reports whether it sees the dark line. By comparing left and right, the program can tell which way to steer. If neither sees the line, it may need to search.',
+      example:'Follow a path drawn on paper with your finger. When the path curves left, your hand turns left to stay on it. The robot uses its sensors and wheels to do a similar job.',
+      code:'const left = robot.lineLeft();\nconst right = robot.lineRight();\nif (left && right) robot.drive(0.6, 0.6);\nelse if (left) robot.drive(0.2, 0.6);\nelse if (right) robot.drive(0.6, 0.2);\nelse robot.drive(0.3, -0.3);',
+      steps:['Read what the left and right sensors see.', 'If both see the line, drive straight.', 'If only one sees it, change wheel speeds to steer toward the line.', 'If neither sees it, turn slowly to search.']
+    },
+    ar:{
+      explanation:'توجد حساسات أسفل روبوت تتبّع الخط. يفحص كل حساس الأرض ويخبر البرنامج هل يرى الخط الداكن. يقارن البرنامج بين الجهتين ليعرف أين ينعطف. وإذا لم يرَ الخط، يبحث عنه.',
+      example:'تتبّع بإصبعك خطًا مرسومًا على ورقة. عندما ينعطف الخط إلى اليسار، تحرك إصبعك إلى اليسار. يستخدم الروبوت حساسات وعجلات ليعمل الشيء نفسه.',
+      code:'const left = robot.lineLeft();\nconst right = robot.lineRight();\nif (left && right) robot.drive(0.6, 0.6);\nelse if (left) robot.drive(0.2, 0.6);\nelse if (right) robot.drive(0.6, 0.2);\nelse robot.drive(0.3, -0.3);',
+      steps:['نقرأ ما يراه الحساس الأيسر والأيمن.', 'إذا رأى الحساسان الخط، يسير الروبوت مستقيمًا.', 'إذا رأى أحدهما الخط، نغيّر سرعة العجلات كي ينعطف نحوه.', 'إذا لم يره أي حساس، ينعطف الروبوت ببطء ليبحث عنه.']
+    }
+  },
+  {
+    en:{
+      explanation:'The program runs again and again, so a normal variable is new each time. The simulator’s <code>state</code> is a small notebook that stays between runs. We can save a useful clue there, such as which side last saw the line.',
+      example:'If you lose sight of a friend in a playground, you may remember the last place you saw them and look there first. A robot can remember a direction in the same way.',
+      code:'if (robot.lineLeft()) state.lastSide = "left";\nif (robot.lineRight()) state.lastSide = "right";\nif (!robot.lineLeft() && !robot.lineRight()) {\n  if (state.lastSide === "left") robot.drive(-0.2, 0.5);\n  else robot.drive(0.5, -0.2);\n}',
+      steps:['When a sensor sees the line, save which side saw it in <code>state.lastSide</code>.', 'The <code>!</code> means “not”; the last condition checks that neither sensor sees the line now.', 'If the line is lost, use the saved side to choose where to search.']
+    },
+    ar:{
+      explanation:'يعمل البرنامج مرات كثيرة، لذلك يبدأ المتغير العادي من جديد في كل مرة. أما <code>state</code> فهي مثل دفتر صغير يحتفظ بالمعلومة بين المرات. يمكننا حفظ الجهة التي رأت الخط آخر مرة.',
+      example:'إذا لم ترَ صديقك في ساحة اللعب، تتذكر آخر مكان رأيته فيه وتبحث هناك. يستطيع الروبوت تذكّر جهة الخط بالطريقة نفسها.',
+      code:'if (robot.lineLeft()) state.lastSide = "left";\nif (robot.lineRight()) state.lastSide = "right";\nif (!robot.lineLeft() && !robot.lineRight()) {\n  if (state.lastSide === "left") robot.drive(-0.2, 0.5);\n  else robot.drive(0.5, -0.2);\n}',
+      steps:['عندما يرى الحساس الخط، نحفظ اسم الجهة في <code>state.lastSide</code>.', 'تعني <code>!</code> «ليس». والشرط الأخير يفحص أن الحساسين لا يريان الخط الآن.', 'إذا ضاع الخط، يستخدم الروبوت الجهة التي حفظها كي يبحث عنها.']
+    }
+  },
+  {
+    en:{
+      explanation:'A robot can have several rules, but it needs to know which rule matters most. The computer checks the rules from top to bottom and follows the first one that is true. Put a safety rule first, then navigation rules, and ordinary movement last.',
+      example:'A crossing guard first makes sure it is safe to cross, then points out the route. A robot should also handle danger before worrying about its usual path.',
+      code:'if (robot.distance() < 18) {\n  robot.drive(-0.5, 0.5); // safety first\n} else if (robot.lineLeft()) {\n  robot.drive(0.2, 0.6);  // follow line\n} else {\n  robot.drive(0.5, 0.5);  // ordinary move\n}',
+      steps:['Check the distance first; a close obstacle has the highest priority.', 'If the path is safe, check whether the left sensor sees the line.', 'If neither special case is true, the final <code>else</code> gives the robot a normal action.']
+    },
+    ar:{
+      explanation:'قد يكون للروبوت أكثر من قاعدة، لذلك نرتبها من الأهم إلى الأقل أهمية. يفحص الكمبيوتر القواعد من الأعلى إلى الأسفل وينفذ أول قاعدة صحيحة. نضع الأمان أولًا، ثم اتباع الطريق، ثم السير العادي.',
+      example:'يتأكد شرطي المرور أولًا أن عبور الطريق آمن، ثم يشير إلى الطريق. على الروبوت أيضًا أن يهتم بالخطر قبل اتباع طريقه المعتاد.',
+      code:'if (robot.distance() < 18) {\n  robot.drive(-0.5, 0.5); // الأمان أولًا\n} else if (robot.lineLeft()) {\n  robot.drive(0.2, 0.6);  // اتبع الخط\n} else {\n  robot.drive(0.5, 0.5);  // حركة عادية\n}',
+      steps:['نفحص المسافة أولًا؛ العائق القريب أهم شيء.', 'إذا كان الطريق آمنًا، نفحص هل يرى الحساس الأيسر الخط.', 'إذا لم ينطبق أي شرط، تعطي <code>else</code> الروبوت حركة عادية.']
+    }
+  },
+  {
+    en:{
+      explanation:'Debugging is a careful way to find why a program behaves differently from what we expected. First describe the problem. Then check the sensor reading and the rule that should respond to it. Change one number, run the test again, and compare.',
+      example:'If a robot turns too late, increase the distance limit from 15 to 25. Now it begins turning sooner. Changing only that number helps us see what caused the improvement.',
+      code:'const distance = robot.distance();\nif (distance < 25) {\n  robot.drive(-0.5, 0.5);\n} else {\n  robot.drive(0.5, 0.5);\n}',
+      steps:['Read the sensor value and give it the name <code>distance</code>.', 'The robot now turns when the distance is under 25 cm; changing this number changes when it reacts.', 'Test several times and write down whether it turns earlier or later. Change one thing at a time.']
+    },
+    ar:{
+      explanation:'البحث عن الخطأ طريقة هادئة لمعرفة لماذا فعل البرنامج شيئًا غير متوقع. نصف المشكلة أولًا، ثم نفحص قراءة الحساس والقاعدة التي يجب أن تعمل. نغيّر رقمًا واحدًا ونجرب مرة أخرى.',
+      example:'إذا انعطف الروبوت متأخرًا، غيّر المسافة من 15 إلى 25. سيبدأ الانعطاف أبكر. عندما نغيّر رقمًا واحدًا، نعرف سبب التحسن.',
+      code:'const distance = robot.distance();\nif (distance < 25) {\n  robot.drive(-0.5, 0.5);\n} else {\n  robot.drive(0.5, 0.5);\n}',
+      steps:['نقرأ الحساس ونحفظ الرقم باسم <code>distance</code>.', 'ينعطف الروبوت الآن عندما تقل المسافة عن 25 سم. تغيير الرقم يغيّر وقت استجابته.', 'جرّبوا أكثر من مرة وسجلوا ما حدث. غيّروا شيئًا واحدًا فقط في كل مرة.']
+    }
+  },
+  {
+    en:{
+      explanation:'Feedback means the robot checks what happened after it acted, then uses the new sensor reading to make a correction. Small corrections are often smoother than sharp turns. This cycle—measure, compare, adjust, measure again—helps the robot stay near its goal.',
+      example:'When you ride a bike, you look at the path, notice when the bike drifts, and gently steer back. Your eyes give feedback to your hands.',
+      code:'const left = robot.lineLeft();\nconst right = robot.lineRight();\nif (left && right) robot.drive(0.6, 0.6);\nelse if (left) robot.drive(0.2, 0.6);\nelse if (right) robot.drive(0.6, 0.2);\nelse robot.drive(0.3, -0.3);',
+      steps:['Read both line sensors again; these are fresh clues about the robot’s position.', 'Use the matching rule to choose straight movement or a gentle correction.', 'On the next loop, measure again to see whether the correction helped.']
+    },
+    ar:{
+      explanation:'تعني التغذية الراجعة أن الروبوت يفحص ما حدث بعد حركته، ثم يستخدم قراءة جديدة ليصحح طريقه. التصحيح الصغير يجعل الحركة أهدأ من الانعطاف القوي. يقيس الروبوت، ويقارن، ويغيّر حركته، ثم يقيس من جديد.',
+      example:'عندما تركب الدراجة، تنظر إلى الطريق. إذا ابتعدت الدراجة قليلًا، توجهها بلطف إلى الطريق. عيناك تخبران يديك ماذا تفعلان.',
+      code:'const left = robot.lineLeft();\nconst right = robot.lineRight();\nif (left && right) robot.drive(0.6, 0.6);\nelse if (left) robot.drive(0.2, 0.6);\nelse if (right) robot.drive(0.6, 0.2);\nelse robot.drive(0.3, -0.3);',
+      steps:['نقرأ الحساسين من جديد لنعرف مكان الروبوت.', 'نختار القاعدة المناسبة: سير مستقيم أو تصحيح بسيط.', 'في الحلقة التالية، نقيس مرة أخرى لنعرف هل ساعد التصحيح.']
+    }
+  }
+];
+const interfaceText={
+  en:{
+    title:'🤖 Robot Simulator',tagline:'Write code, press Run, and watch your robot sense, think and act.',
+    simulator:'Simulator',learn:'Learn Robotics',project:'Real-World Project',
+    sensorHint:'Drag the 3D scene to rotate the camera; scroll to zoom. The red line shows the distance sensor, not a barrier. If an obstacle is close, the robot must reverse and turn to move away.',
+    giftHint:'Gift mission: press Run and the robot will follow a safe route around obstacles. Press Reset to try again.',
+    run:'▶ Run',pause:'⏸ Pause',reset:'↺ Reset',forward:'↑ Forward',back:'↓ Back',left:'← Left',right:'Right →',
+    obstacleMode:'Obstacle arena',lineMode:'Line track',giftMode:'🎁 Gift mission',speed:'Speed',noise:'Sensor noise',
+    slippery:'Slippery floor',random:'🎲 Random obstacles',trail:' Trail',program:'Your program (runs every tick, like Arduino <code>loop()</code>)',
+    restore:'Restore example code',commands:'Robot commands',
+    courseTag:'Robotics course · 12 kid-friendly sessions',courseHeading:'Welcome, robot explorers!',
+    courseIntro:'Choose a short session, talk through a big idea, and try a hands-on challenge together. Start anywhere—no robotics experience needed.',
+    beginner:'🟢 Beginner',intermediate:'🟣 Intermediate',advanced:'🟠 Advanced',
+    idea:'💡 The big idea',ask:'💬 Ask the kids',challenge:'🎯 Try it together',check:'⭐ Quick check',
+    sample:'Show a sample answer',code:'For curious builders: see the code example',
+    deepTitle:'Let’s understand it step by step',exampleTitle:'A real-life example',codeTitle:'A tiny code example',walkthroughTitle:'What does each part do?',
+    simulatorTry:'🤖 Try this session in the simulator',allSessions:'← All sessions',
+    previous:'← Previous',next:'Next session →',finish:'Finish course',
+    photo:'Robotics in the real world · Photo via',photoAlt:'A robotics photo for this session',
+    progress:'Course progress',session:'Session',sessionOf:'of',
+    languageButton:'العربية',languageLabel:'Switch language to Arabic',
+    distance:'distance',gift:'gift',obstacle:'obstacle'
+  },
+  ar:{
+    title:'🤖 محاكي الروبوت',tagline:'اكتب التعليمات، واضغط ابدأ، وشاهد الروبوت يتحرك ويتعلم.',
+    simulator:'المحاكي',learn:'تعلّم الروبوتات',project:'مشروع عملي',
+    sensorHint:'اسحب المشهد ثلاثي الأبعاد لتدوير الكاميرا، واستخدم عجلة الفأرة للتقريب. يبيّن الخط الأحمر اتجاه الحساس وليس حاجزًا. إذا اقترب الروبوت من عائق، يرجع ثم ينعطف.',
+    giftHint:'مهمة الهدية: اضغط ابدأ ليتبع الروبوت طريقًا آمنًا. اضغط إعادة ليحاول من جديد.',
+    run:'▶ ابدأ',pause:'⏸ توقّف',reset:'↺ إعادة',forward:'↑ إلى الأمام',back:'↓ إلى الخلف',left:'← يسار',right:'يمين →',
+    obstacleMode:'ساحة العوائق',lineMode:'مسار الخط',giftMode:'🎁 مهمة الهدية',speed:'السرعة',noise:'تغيّر الحساس',
+    slippery:'أرض زلقة',random:'🎲 عوائق جديدة',trail:' أثر الحركة',program:'تعليماتك للروبوت',restore:'إعادة المثال',commands:'أوامر الروبوت',
+    courseTag:'تعلّم الروبوتات · ١٢ درسًا للأطفال',courseHeading:'مرحبًا يا أصدقاء الروبوت!',
+    courseIntro:'اختر درسًا قصيرًا، وتحدّثوا عن فكرته، ثم جرّبوا نشاطًا ممتعًا. يمكنكم البدء بأي درس.',
+    beginner:'🟢 مبتدئ',intermediate:'🟣 متوسط',advanced:'🟠 متقدم',
+    idea:'💡 الفكرة',ask:'💬 سؤال للأطفال',challenge:'🎯 لنجرب معًا',check:'⭐ سؤال سريع',
+    sample:'شاهدوا إجابة ممكنة',code:'لمن يريد معرفة المزيد: مثال التعليمات',
+    deepTitle:'لنفهم الفكرة خطوة خطوة',exampleTitle:'مثال من الحياة',codeTitle:'مثال صغير على التعليمات',walkthroughTitle:'ماذا يفعل كل سطر؟',
+    simulatorTry:'🤖 جرّب هذا الدرس في المحاكي',allSessions:'كل الدروس ←',
+    previous:'السابق ←',next:'الدرس التالي →',finish:'انتهت الدروس',
+    photo:'صورة عن الروبوتات · الصورة من',photoAlt:'صورة عن الروبوتات لهذا الدرس',
+    progress:'التقدم في الدروس',session:'الدرس',sessionOf:'من',
+    languageButton:'English',languageLabel:'Change language to English',
+    distance:'المسافة',gift:'الهدية',obstacle:'العائق'
+  }
+};
+function setLanguage(nextLanguage){
+  language=nextLanguage==='ar'?'ar':'en';
+  const text=interfaceText[language],rtl=language==='ar';
+  document.querySelectorAll('[data-i18n-en][data-i18n-ar]').forEach(element=>{
+    element.textContent=element.getAttribute(`data-i18n-${language}`);
+  });
+  document.querySelectorAll('[data-i18n-alt-en][data-i18n-alt-ar]').forEach(element=>{
+    element.setAttribute('alt',element.getAttribute(`data-i18n-alt-${language}`));
+  });
+  document.documentElement.lang=language;
+  document.documentElement.dir=rtl?'rtl':'ltr';
+  document.title=text.title.replace('🤖 ','');
+  $('app-title').textContent=text.title;
+  $('app-tagline').textContent=text.tagline;
+  $('show-sim').textContent=text.simulator;
+  $('show-learn').textContent=text.learn;
+  $('show-project').textContent=text.project;
+  $('language-toggle').textContent=text.languageButton;
+  $('language-toggle').setAttribute('aria-label',text.languageLabel);
+  $('language-toggle').setAttribute('aria-pressed',String(rtl));
+  $('sensor-hint').textContent=text.sensorHint;
+  $('c3d').setAttribute('aria-label',rtl?'مشهد ثلاثي الأبعاد للروبوت. اسحب لتدوير الكاميرا واستخدم عجلة الفأرة للتقريب.':'3D robot arena. Drag to rotate the camera and scroll to zoom.');
+  $('gift-hint').textContent=text.giftHint;
+  $('run').textContent=running?text.pause:text.run;
+  $('reset').textContent=text.reset;
+  $('forward').textContent=text.forward;
+  $('backward').textContent=text.back;
+  $('turn-left').textContent=text.left;
+  $('turn-right').textContent=text.right;
+  $('mode-obstacle').textContent=text.obstacleMode;
+  $('mode-line').textContent=text.lineMode;
+  $('mode-gift').textContent=text.giftMode;
+  $('speed-label').firstChild.textContent=`${text.speed} `;
+  $('noise-label').firstChild.textContent=`${text.noise} `;
+  $('slippery-label').firstChild.textContent=`${text.slippery} `;
+  $('trail-label').textContent=text.trail;
+  $('rnd').textContent=text.random;
+  $('program-heading').innerHTML=text.program;
+  $('rc').textContent=text.restore;
+  $('commands-heading').textContent=text.commands;
+  $('command-drive').lastChild.textContent=rtl?' قوة المحرك من -1 إلى 1':' motor power from -1 to 1';
+  $('command-distance').lastChild.textContent=rtl?' المسافة إلى أقرب عائق أمام الروبوت':' cm to the nearest obstacle ahead';
+  $('command-line').lastChild.textContent=rtl?' صحيحة عندما يكون الحساس فوق الخط الداكن':' true when over black';
+  $('command-state').lastChild.textContent=rtl?' ذاكرة تحفظ معلومة للحركة التالية':' an object to remember values between ticks';
+  $('course-tag').textContent=text.courseTag;
+  $('course-heading').textContent=text.courseHeading;
+  $('course-intro').textContent=text.courseIntro;
+  $('level-beginner').textContent=text.beginner;
+  $('level-intermediate').textContent=text.intermediate;
+  $('level-advanced').textContent=text.advanced;
+  lessonCards.forEach((lesson,index)=>{
+    const arabic=lessonArabic[index];
+    lesson.querySelector('h3').textContent=rtl?arabic.title:englishTitles[index];
+    lesson.querySelector('.level').textContent=rtl?`${arabic.level} · ${index+1}`:englishLevels[index];
+    lesson.querySelector('.lesson-summary').textContent=rtl?arabic.summary:englishSummaries[index];
+    lesson.querySelector('.lesson-art').setAttribute('aria-label',rtl?arabic.summary:englishImageLabels[index]);
+    lesson.querySelector('.lesson-launch').textContent=rtl?`افتح الدرس ${index+1} ←`:`Open session ${index+1} →`;
+  });
+  if(!sessionView.classList.contains('hidden')){
+    const match=location.hash.match(/^#session-(\d+)$/);
+    if(match)openSession(Number(match[1])-1,false);
+  }
+  try{localStorage.setItem('robot-sim-language',language)}catch{}
+  sync();
+}
+const englishSummaries=lessonCards.map(lesson=>lesson.querySelector('p').textContent.trim());
+const englishImageLabels=lessonCards.map(lesson=>lesson.querySelector('.lesson-art').getAttribute('aria-label'));
+try{language=localStorage.getItem('robot-sim-language')==='ar'?'ar':'en'}catch{}
+function escapeHtml(value){
+  return value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+function startLesson(index){
+  const program=lessonPrograms[index];
+  if(mode!==program.mode){
+    $('mode').value=program.mode;
+    $('mode').dispatchEvent(new Event('change'));
+  }else{
+    running=false;
+    sync();
+    setup();
+  }
+  $('code').value=program.code;
+  $('code').dispatchEvent(new Event('input'));
+  $('err').textContent='';
+  clearSessionHash();
+  showView('sim');
+  $('sim-view').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function openSession(index,addHistory=true){
+  if(addHistory)history.pushState({session:index+1},'',`#session-${index+1}`);
+  const lesson=lessonCards[index],note=language==='ar'?lessonArabic[index]:lessonNotes[index];
+  const text=interfaceText[language],title=language==='ar'?note.title:englishTitles[index];
+  const level=language==='ar'?note.level:englishLevels[index].split(' · ')[0];
+  const imageUrl=`https://images.unsplash.com/${note.photo}?auto=format&fit=crop&w=1000&q=80`;
+  const content=$('session-content');
+  content.innerHTML=`<div class="session-toolbar">
+    <button class="session-back" id="session-back" type="button">${text.allSessions}</button>
+    <span class="session-count">${text.session} ${index+1} ${text.sessionOf} ${lessonCards.length}</span>
+  </div>
+  <div class="session-progress" role="progressbar" aria-label="${text.progress}" aria-valuemin="1" aria-valuemax="${lessonCards.length}" aria-valuenow="${index+1}"><span style="width:${((index+1)/lessonCards.length)*100}%"></span></div>
+  <article class="card session-hero">
+    <div class="session-hero-head">
+      <div><span class="session-kicker">${escapeHtml(level)} · ${text.session} ${index+1}</span>
+        <h2 class="session-title">${escapeHtml(title)}</h2>
+        <p class="session-intro">${escapeHtml(note.story)}</p>
+      </div>
+      <div class="session-visuals">
+        <figure><img class="session-photo" src="${imageUrl}" alt="${text.photoAlt}" loading="eager" referrerpolicy="no-referrer">
+          <figcaption>${text.photo} <a href="https://unsplash.com/license" target="_blank" rel="noopener noreferrer">Unsplash</a></figcaption>
+        </figure>
+        <figure class="session-diagram-figure"><div id="session-diagram-slot"></div>
+          <figcaption>${escapeHtml(lesson.querySelector('.lesson-art').getAttribute('aria-label'))}</figcaption>
+        </figure>
+      </div>
+    </div>
+  </article>
+  <div class="session-conversation">
+    <article class="card session-teaching-card idea"><h3>${text.idea}</h3><p>${escapeHtml(note.idea)}</p></article>
+    <article class="card session-teaching-card talk"><h3>${text.ask}</h3><p>${escapeHtml(note.ask)}</p></article>
+    <article class="card session-teaching-card challenge"><h3>${text.challenge}</h3><p>${escapeHtml(note.challenge)}</p></article>
+  </div>
+  <article class="card session-check"><h3>${text.check}</h3><p>${escapeHtml(note.check)}</p>
+    <details><summary>${text.sample}</summary><p>${escapeHtml(note.answer)}</p></details>
+  </article>
+  <article class="card session-deep" id="session-deep"></article>
+  <details class="card session-code" id="session-extra"><summary>${text.code}</summary></details>
+  <div class="session-footer">
+    <button id="session-previous" type="button"${index===0?' disabled':''}>${text.previous}</button>
+    <button id="session-next" class="p" type="button">${index===lessonCards.length-1?text.finish:text.next}</button>
+  </div>
+  <button id="session-simulator" class="p session-open-sim" type="button">${text.simulatorTry}</button>`;
+  const deep=lessonDeep[index][language];
+  $('session-deep').innerHTML=`<h3>${text.deepTitle}</h3>
+    <p>${deep.explanation}</p>
+    <aside class="session-example"><h4>${text.exampleTitle}</h4><p>${deep.example}</p></aside>
+    <section class="session-code-sample"><h4>${text.codeTitle}</h4><pre><code>${escapeHtml(deep.code)}</code></pre></section>
+    <section class="session-walkthrough"><h4>${text.walkthroughTitle}</h4><ol>${deep.steps.map(step=>`<li>${step}</li>`).join('')}</ol></section>`;
+  const diagram=lesson.querySelector('.lesson-art').cloneNode(true);
+  diagram.setAttribute('class','session-diagram');
+  diagram.setAttribute('aria-hidden','true');
+  $('session-diagram-slot').appendChild(diagram);
+  const extra=$('session-extra'),sourceDetails=lesson.querySelector('details');
+  if(sourceDetails&&language==='en'){
+    for(const child of sourceDetails.children){
+      if(child.tagName!=='SUMMARY')extra.appendChild(child.cloneNode(true));
+    }
+  }else{
+    extra.hidden=true;
+  }
+  const photo=content.querySelector('.session-photo');
+  photo.addEventListener('error',()=>photo.closest('figure').classList.add('image-unavailable'),{once:true});
+  $('session-back').onclick=()=>{
+    history.replaceState(null,'',location.pathname+location.search);
+    showView('learn');
+    learnView.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  $('session-previous').onclick=()=>openSession(index-1);
+  $('session-next').onclick=()=>index===lessonCards.length-1
+    ?$('session-back').click()
+    :openSession(index+1);
+  $('session-simulator').onclick=()=>startLesson(index);
+  showView('session');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function syncSessionRoute(){
+  const match=location.hash.match(/^#session-(\d+)$/);
+  if(match){
+    const index=Number(match[1])-1;
+    if(index>=0&&index<lessonCards.length){openSession(index,false);return}
+    clearSessionHash();
+  }
+  if(!sessionView.classList.contains('hidden'))showView('learn');
+}
+lessonCards.forEach((lesson,index)=>{
+  const sourceSummary=[...lesson.children].find(child=>child.tagName==='P');
+  const summary=document.createElement('p');
+  summary.className='lesson-summary';
+  summary.textContent=sourceSummary?sourceSummary.textContent.trim():'';
+  lesson.insertBefore(summary,lesson.querySelector('.lesson-launch'));
+  const button=document.createElement('button');
+  button.className='lesson-launch';
+  button.type='button';
+  button.textContent=`Open session ${index+1} →`;
+  button.addEventListener('click',()=>openSession(index));
+  lesson.appendChild(button);
+});
+$('language-toggle').onclick=()=>setLanguage(language==='en'?'ar':'en');
+setLanguage(language);
+window.addEventListener('popstate',syncSessionRoute);
+if(location.hash.startsWith('#session-'))syncSessionRoute();
+$('spd').oninput=e=>cfg.spd=+e.target.value;
+$('noi').oninput=e=>cfg.noi=+e.target.value;
+$('slp').oninput=e=>cfg.slp=+e.target.value;
+$('trl').onchange=e=>{trail=e.target.checked;pts=[]};
+$('rnd').onclick=()=>{
+  if(mode!=='obstacle'){mode='obstacle';$('mode').value='obstacle';$('code').value=CODE.obstacle}
+  RECTS=[];
+  for(let i=0;i<5;i++){let r;do{r=[40+Math.random()*520,40+Math.random()*300,30+Math.random()*70,30+Math.random()*60]}while(r[0]<130&&r[1]<130);RECTS.push(r)}
+  running=false;sync();setup();
+};
+document.getElementById('code').value=CODE.obstacle;
+setup();requestAnimationFrame(loop);
+
+$('rc').onclick=()=>{$('code').value=CODE[mode];try{localStorage.removeItem('rs:'+mode)}catch(e){}};
+(function(){try{
+  const load=()=>{const v=localStorage.getItem('rs:'+mode);if(v)$('code').value=v};
+  load();
+  $('code').addEventListener('input',()=>{try{localStorage.setItem('rs:'+mode,$('code').value)}catch(e){}});
+  $('mode').addEventListener('change',()=>setTimeout(load,0));
+}catch(e){}})();
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
